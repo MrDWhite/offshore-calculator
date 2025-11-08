@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offshore Resource Calculator</title>
+<style>
+  :root{
+    --bg: #f6f8fb;
+    --panel: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --ring: rgba(15,23,42,.08);
+    --brand: #4f46e5;
+    --good: #10b981;
+  }
+  [data-theme="dark"]{
+    --bg:#0b1220; --panel:#0f172a; --text:#e5e7eb; --muted:#94a3b8; --border:#1f2937; --ring:rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html, body { 
+    height:100%; 
+    margin:0; 
+    padding:0;
+    overflow:hidden;
+  }
+  body{
+    background:var(--bg);
+    font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* App chrome */
+  .app { 
+    height:100%; 
+    min-height:100%;
+    display:flex; 
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .appHeader{
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between;
+    padding:10px 14px; 
+    background:var(--panel); 
+    border-bottom:1px solid var(--border);
+    box-shadow:0 2px 8px var(--ring); 
+    position:sticky; 
+    top:0; 
+    z-index:10;
+    flex-shrink:0;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+    font-size:15px;
+  }
+  .brandBadge{
+    width:26px;
+    height:26px;
+    border-radius:8px;
+    background:linear-gradient(135deg,var(--brand),#7c3aed); 
+    box-shadow:0 4px 12px rgba(79,70,229,.35);
+    flex-shrink:0;
+  }
+  .headerBtns{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .btn{
+    border:1px solid var(--border); 
+    background:var(--panel); 
+    color:var(--text);
+    padding:6px 12px; 
+    border-radius:8px; 
+    font-size:12px; 
+    cursor:pointer;
+    transition:all 0.2s;
+    white-space:nowrap;
+    touch-action:manipulation;
+  }
+  .btn:hover{
+    background:var(--bg);
+    border-color:var(--brand);
+  }
+  .btn.primary{ 
+    background:var(--brand); 
+    border-color:var(--brand); 
+    color:#fff;
+  }
+  .btn.primary:hover{
+    background:#4338ca;
+    border-color:#4338ca;
+  }
+  .btn.ghost{ 
+    background:transparent; 
+  }
+  .btn:active{ 
+    transform:scale(0.98); 
+  }
+  .btn.hidden{
+    display:none;
+  }
+
+  /* Content */
+  .appBody{ 
+    flex:1; 
+    overflow-y:auto; 
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    min-height:0;
+  }
+  .container{
+    max-width:1200px;
+    margin:16px auto;
+    padding:0 14px;
+    padding-bottom:20px;
+  }
+  .sub{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:16px;
+    line-height:1.5;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+  @media(min-width:900px){
+    .grid{
+      grid-template-columns:1.2fr .8fr;
+    }
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:0 4px 12px var(--ring);
+    padding:16px;
+  }
+  .section{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    margin-top:14px;
+  }
+  .section h3{
+    margin:0 0 10px 0;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:#475569;
+    font-size:12px;
+    font-weight:600;
+  }
+  .row{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  @media(min-width:600px){
+    .row{
+      grid-template-columns:1fr 1fr;
+    }
+  }
+  .full{
+    grid-column:1/-1;
+  }
+  .label{
+    font-size:12px;
+    color:#475569;
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  [data-theme="dark"] .label{
+    color:#94a3b8;
+  }
+  .valueTag{
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:3px 8px;
+    font-size:11px;
+    color:#475569;
+    background:#fff;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  [data-theme="dark"] .valueTag{
+    background:#0b1220; 
+    color:#cbd5e1; 
+    border-color:#1f2937;
+  }
+  input[type=range]{
+    width:100%;
+    height:8px;
+    -webkit-appearance:none;
+    appearance:none;
+    background:var(--border);
+    border-radius:4px;
+    outline:none;
+    cursor:pointer;
+    touch-action:manipulation;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    appearance:none;
+    width:18px;
+    height:18px;
+    background:var(--brand);
+    border-radius:50%;
+    cursor:pointer;
+    box-shadow:0 2px 6px rgba(79,70,229,.3);
+    transition:transform 0.1s;
+  }
+  input[type=range]::-webkit-slider-thumb:active{
+    transform:scale(1.2);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:18px;
+    height:18px;
+    background:var(--brand);
+    border-radius:50%;
+    cursor:pointer;
+    border:none;
+    box-shadow:0 2px 6px rgba(79,70,229,.3);
+  }
+  .toggle{
+    display:inline-flex;
+    background:#e8eef7;
+    border-radius:999px;
+    padding:4px;
+    gap:2px;
+  }
+  [data-theme="dark"] .toggle{
+    background:#0b1220;
+    border:1px solid #1f2937;
+  }
+  .toggle button{
+    border:0;
+    background:transparent;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:11px;
+    color:#334155;
+    cursor:pointer;
+    transition:all 0.2s;
+    white-space:nowrap;
+    touch-action:manipulation;
+  }
+  [data-theme="dark"] .toggle button{
+    color:#cbd5e1;
+  }
+  .toggle .active{
+    background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+    font-weight:600;
+  }
+  [data-theme="dark"] .toggle .active{
+    background:#111827;
+  }
+  .kpi{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    background:var(--panel);
+  }
+  .kpi .title{
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#64748b;
+    font-weight:600;
+  }
+  .kpi .number{
+    font-size:28px;
+    font-weight:700;
+    margin-top:6px;
+    color:var(--text);
+    line-height:1.2;
+  }
+  .kpi .subline{
+    font-size:12px;
+    color:#64748b;
+    margin-top:8px;
+    line-height:1.4;
+  }
+  .funnelTitle{
+    font-size:12px;
+    font-weight:600;
+    color:#475569;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-bottom:12px;
+  }
+  .bar{
+    position:relative;
+    height:32px;
+    border-radius:10px;
+    background:#eef2f7;
+    overflow:hidden;
+    border:1px solid var(--border);
+  }
+  [data-theme="dark"] .bar{
+    background:#0b1220;
+  }
+  .fill{
+    height:100%;
+    border-radius:10px;
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.4), inset 0 -3px 6px rgba(0,0,0,.14), 0 4px 10px rgba(0,0,0,0.08);
+    transition:width 0.3s ease;
+  }
+  .barRow{
+    margin-bottom:14px;
+  }
+  .barRow:last-child{
+    margin-bottom:0;
+  }
+  .barHeader{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:6px;
+    gap:8px;
+  }
+  .barHeader .t{
+    font-size:12px;
+    color:#475569;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:600;
+    flex:1;
+  }
+  [data-theme="dark"] .barHeader .t, 
+  [data-theme="dark"] .barHeader .n{
+    color:#cbd5e1;
+  }
+  .barHeader .n{
+    font-size:12px;
+    color:#475569;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .outline{
+    box-shadow:0 0 0 1px rgba(15,23,42,.15) inset;
+  }
+
+  /* Teams optimizations */
+  .teams-mode .container{
+    max-width:100%;
+    padding:12px;
+  }
+  .teams-mode .appHeader{
+    padding:8px 12px;
+  }
+  .teams-mode .brand{
+    font-size:14px;
+  }
+  .teams-mode .card{
+    padding:14px;
+    border-radius:12px;
+  }
+  .teams-mode .section{
+    padding:12px;
+    margin-top:12px;
+  }
+  .teams-mode .kpi .number{
+    font-size:24px;
+  }
+  
+  /* Responsive adjustments */
+  @media(max-width:600px){
+    .headerBtns{
+      gap:6px;
+    }
+    .btn{
+      padding:5px 10px;
+      font-size:11px;
+    }
+    .brand{
+      font-size:13px;
+    }
+    .container{
+      padding:0 10px;
+      padding-bottom:16px;
+    }
+    .card{
+      padding:12px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="appRoot">
+  <header class="appHeader">
+    <div class="brand"><div class="brandBadge"></div> Offshore Resource Calculator</div>
+    <div class="headerBtns">
+      <button class="btn ghost" id="btnDark">Dark</button>
+      <button class="btn" id="btnReset">Reset</button>
+      <button class="btn primary" id="btnFullscreen">Full screen</button>
+    </div>
+  </header>
+
+  <main class="appBody">
+    <div class="container">
+      <div class="sub">Excel‑aligned terms: adjust rates, set a weekly Starts target, and see required interviews & recruiters.</div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="full">
+            <div class="label"><span>Starts Needed (First‑Day Arrivals) · This Week</span><span class="valueTag" id="val-starts">75</span></div>
+            <input id="starts" type="range" min="0" max="2000" step="1" value="75">
+          </div>
+
+          <div class="section">
+            <h3>Field Recruiting Assumptions</h3>
+            <div class="row">
+              <div>
+                <div class="label"><span>Branch Interviews Show Rate</span><span class="valueTag" id="val-show">60%</span></div>
+                <input id="show" type="range" min="0" max="100" step="1" value="60">
+              </div>
+              <div>
+                <div class="label"><span>Passed Interviews Rate</span><span class="valueTag" id="val-passInt">80%</span></div>
+                <input id="passInt" type="range" min="0" max="100" step="1" value="80">
+              </div>
+              <div>
+                <div class="label"><span>Passed Screenings Rate</span><span class="valueTag" id="val-passScreen">90%</span></div>
+                <input id="passScreen" type="range" min="0" max="100" step="1" value="90">
+              </div>
+              <div>
+                <div class="label"><span>1st Day Arrival Rate</span><span class="valueTag" id="val-arrive">75%</span></div>
+                <input id="arrive" type="range" min="0" max="100" step="1" value="75">
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="label" style="margin-bottom:10px;">
+              <span style="font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.08em">Offshore Assumptions</span>
+              <span class="toggle">
+                <button id="mode-int" class="active">KPI: Interviews / Day</button>
+                <button id="mode-onb">KPI: Onboards / Day</button>
+              </span>
+            </div>
+            <div class="row">
+              <div class="full" id="intWrap">
+                <div class="label"><span>Branch Interviews Scheduled per Recruiter / Day</span><span class="valueTag" id="val-intpd">4.2</span></div>
+                <input id="intpd" type="range" min="0" max="30" step="0.1" value="4.2">
+              </div>
+              <div class="full" id="onbWrap" style="display:none;">
+                <div class="label"><span>Onboards per Recruiter / Day</span><span class="valueTag" id="val-onbpd">1.2</span></div>
+                <input id="onbpd" type="range" min="0" max="10" step="0.1" value="1.2">
+              </div>
+              <div class="full">
+                <div class="label"><span>Working Days / Week</span><span class="valueTag" id="val-days">5</span></div>
+                <input id="days" type="range" min="1" max="7" step="1" value="5">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="grid" style="grid-template-columns:1fr;gap:12px;margin-bottom:12px;">
+            <div class="kpi">
+              <div class="title">Interviews Required / Week</div>
+              <div class="number" id="kpi-interviews">0</div>
+              <div class="subline">Derived from Excel funnel</div>
+            </div>
+            <div class="kpi">
+              <div class="title">Recruiters Needed</div>
+              <div class="number" id="kpi-recruiters">0</div>
+              <div class="subline" id="kpi-hint"></div>
+              <div class="subline"><strong>Daily Interview Slots Required:</strong> <span id="kpi-dailyslots">0</span> / day</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="funnelTitle">Excel Recruiting Funnel</div>
+
+            <div class="barRow">
+              <div class="barHeader"><div class="t">Required Interviews Scheduled</div><div class="n" id="n-scheduled">0</div></div>
+              <div class="bar outline"><div class="fill" id="bar-scheduled" style="width:100%;background:linear-gradient(90deg,#6366f1,#4338ca)"></div></div>
+            </div>
+
+            <div class="barRow">
+              <div class="barHeader"><div class="t">Interviews Conducted</div><div class="n" id="n-conducted">0</div></div>
+              <div class="bar"><div class="fill" id="bar-conducted" style="width:60%;background:linear-gradient(90deg,#7c3aed,#5b21b6)"></div></div>
+            </div>
+
+            <div class="barRow">
+              <div class="barHeader"><div class="t">Screenings Initiated</div><div class="n" id="n-screens">0</div></div>
+              <div class="bar"><div class="fill" id="bar-screens" style="width:40%;background:linear-gradient(90deg,#db2777,#9d174d)"></div></div>
+            </div>
+
+            <div class="barRow">
+              <div class="barHeader"><div class="t">Confirmed to Start</div><div class="n" id="n-confirmed">0</div></div>
+              <div class="bar"><div class="fill" id="bar-confirmed" style="width:30%;background:linear-gradient(90deg,#f59e0b,#b45309)"></div></div>
+            </div>
+
+            <div class="barRow">
+              <div class="barHeader"><div class="t">First‑Day Arrivals (Starts)</div><div class="n" id="n-arrivals">0</div></div>
+              <div class="bar"><div class="fill" id="bar-arrivals" style="width:20%;background:linear-gradient(90deg,#10b981,#047857)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  var params = new URLSearchParams(location.search);
+  var appRoot = document.getElementById('appRoot');
+  
+  var isInIframe = window.self !== window.top;
+  var isTeams = params.get('mode') === 'teams' || isInIframe;
+  
+  if (isTeams || isInIframe) {
+    appRoot.classList.add('teams-mode');
+    var fullscreenBtn = document.getElementById('btnFullscreen');
+    if (fullscreenBtn) fullscreenBtn.style.display = 'none';
+  }
+  
+  if (params.get('theme') === 'dark') {
+    document.documentElement.setAttribute('data-theme','dark');
+  }
+
+  var el = function(id) { return document.getElementById(id); };
+  
+  var DEFAULTS = {
+    starts: 75, show: 0.60, passInt: 0.80, passScreen: 0.90, arrive: 0.75,
+    mode: 'interviews', intpd: 4.2, onbpd: 1.2, days: 5
+  };
+  var state = {};
+  for (var key in DEFAULTS) {
+    if (DEFAULTS.hasOwnProperty(key)) state[key] = DEFAULTS[key];
+  }
+
+  function syncRanges(){
+    el('starts').value = state.starts; el('val-starts').textContent = state.starts;
+    el('show').value = Math.round(state.show*100); el('val-show').textContent = Math.round(state.show*100)+'%';
+    el('passInt').value = Math.round(state.passInt*100); el('val-passInt').textContent = Math.round(state.passInt*100)+'%';
+    el('passScreen').value = Math.round(state.passScreen*100); el('val-passScreen').textContent = Math.round(state.passScreen*100)+'%';
+    el('arrive').value = Math.round(state.arrive*100); el('val-arrive').textContent = Math.round(state.arrive*100)+'%';
+    el('intpd').value = state.intpd; el('val-intpd').textContent = state.intpd.toFixed(1);
+    el('onbpd').value = state.onbpd; el('val-onbpd').textContent = state.onbpd.toFixed(1);
+    el('days').value = state.days; el('val-days').textContent = state.days;
+    if(state.mode==='interviews'){
+      el('mode-int').classList.add('active'); el('mode-onb').classList.remove('active');
+      el('intWrap').style.display='block'; el('onbWrap').style.display='none';
+    } else {
+      el('mode-onb').classList.add('active'); el('mode-int').classList.remove('active');
+      el('intWrap').style.display='none'; el('onbWrap').style.display='block';
+    }
+  }
+
+  function bindRange(id, key){
+    var input = el(id), tag = el('val-'+key);
+    input.addEventListener('input', function(){
+      var val = parseFloat(input.value);
+      if(['show','passInt','passScreen','arrive'].indexOf(key) !== -1) {
+        state[key] = val/100; tag.textContent = Math.round(val)+'%';
+      } else {
+        state[key] = val;
+        tag.textContent = (key==='intpd'||key==='onbpd') ? val.toFixed(1) : val;
+      }
+      calc();
+    });
+  }
+
+  ['starts','show','passInt','passScreen','arrive','intpd','onbpd','days'].forEach(function(id){ bindRange(id, id); });
+
+  el('mode-int').addEventListener('click',function(){ state.mode='interviews'; syncRanges(); calc(); });
+  el('mode-onb').addEventListener('click',function(){ state.mode='onboards'; syncRanges(); calc(); });
+  el('btnReset').addEventListener('click',function(){
+    for(var k in DEFAULTS) if(DEFAULTS.hasOwnProperty(k)) state[k]=DEFAULTS[k];
+    syncRanges(); calc();
+  });
+  el('btnDark').addEventListener('click',function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    if(cur==='dark') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme','dark');
+  });
+  el('btnFullscreen').addEventListener('click',function(){
+    if(isInIframe){ window.open(location.href.replace(/\?.*$/,''),'_blank'); }
+    else { 
+      var elem = document.documentElement;
+      if(!document.fullscreenElement && elem.requestFullscreen) elem.requestFullscreen();
+      else if(document.exitFullscreen) document.exitFullscreen();
+    }
+  });
+
+  function formatInt(n){ return new Intl.NumberFormat().format(Math.round(n)); }
+
+  function calc(){
+    var arrivals = state.starts;
+    var confirmed = arrivals / Math.max(0.0001, state.arrive);
+    var screens = confirmed / Math.max(0.0001, state.passScreen);
+    var conducted = screens / Math.max(0.0001, state.passInt);
+    var scheduled = conducted / Math.max(0.0001, state.show);
+
+    var interviewsReq = Math.ceil(scheduled);
+    var recruiters = 0, hint = '';
+    if(state.mode==='interviews'){
+      var perWeek = Math.max(0.01, state.intpd * state.days);
+      recruiters = Math.ceil(interviewsReq / perWeek);
+      hint = state.intpd.toFixed(1) + ' interviews/day · ' + state.days + ' days';
+    } else {
+      var perWeek = Math.max(0.01, state.onbpd * state.days);
+      recruiters = Math.ceil(state.starts / perWeek);
+      hint = state.onbpd.toFixed(1) + ' onboards/day · ' + state.days + ' days';
+    }
+
+    var dailySlots = Math.ceil(interviewsReq / Math.max(1, state.days));
+
+    el('kpi-interviews').textContent = formatInt(interviewsReq);
+    el('kpi-recruiters').textContent = formatInt(recruiters);
+    el('kpi-hint').textContent = hint;
+    el('kpi-dailyslots').textContent = formatInt(dailySlots);
+
+    var max = Math.max(1, scheduled);
+    function width(v){ return Math.max(2, Math.round((v/max)*100)); }
+    el('n-scheduled').textContent = formatInt(scheduled);
+    el('n-conducted').textContent = formatInt(conducted);
+    el('n-screens').textContent = formatInt(screens);
+    el('n-confirmed').textContent = formatInt(confirmed);
+    el('n-arrivals').textContent = formatInt(arrivals);
+
+    el('bar-scheduled').style.width = width(scheduled)+'%';
+    el('bar-conducted').style.width = width(conducted)+'%';
+    el('bar-screens').style.width = width(screens)+'%';
+    el('bar-confirmed').style.width = width(confirmed)+'%';
+    el('bar-arrivals').style.width = width(arrivals)+'%';
+  }
+
+  syncRanges();
+  calc();
+})();
+</script>
+</body>
+</html>
+
