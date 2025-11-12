@@ -237,6 +237,43 @@
     border:none;
     box-shadow:0 2px 6px rgba(79,70,229,.3);
   }
+  select{
+    width:100%;
+    padding:8px 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--panel);
+    color:var(--text);
+    font-size:13px;
+    font-family:inherit;
+    cursor:pointer;
+    outline:none;
+    transition:all 0.2s;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 10px center;
+    padding-right:32px;
+  }
+  select:hover{
+    border-color:var(--brand);
+  }
+  select:focus{
+    border-color:var(--brand);
+    box-shadow:0 0 0 3px var(--ring);
+  }
+  [data-theme="dark"] select{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  }
+  .profileHint{
+    font-size:11px;
+    color:var(--muted);
+    font-style:italic;
+    margin-bottom:12px;
+    line-height:1.5;
+  }
   .toggle{
     display:inline-flex;
     background:#e8eef7;
@@ -400,6 +437,12 @@
       padding:12px;
     }
   }
+  @media(min-width:600px){
+    .profileSelectWrapper{
+      flex:1 1 auto !important;
+      max-width:300px !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -415,33 +458,42 @@
 
   <main class="appBody">
     <div class="container">
-      <div class="sub">Excel‑aligned terms: adjust rates, set a weekly Starts target, and see required interviews & recruiters.</div>
-
       <div class="grid">
         <div class="card">
           <div class="full">
             <div class="label"><span>Starts Needed (First‑Day Arrivals) · This Week</span><span class="valueTag" id="val-starts">75</span></div>
-            <input id="starts" type="range" min="0" max="2000" step="1" value="75">
+            <input id="starts" type="range" min="0" max="2000" step="1" value="75" oninput="if(window.updateStarts)window.updateStarts(this.value)">
           </div>
 
           <div class="section">
-            <h3>Field Recruiting Assumptions</h3>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+              <h3 style="margin:0;flex:1 1 auto;min-width:0;">Field Recruiting Assumptions</h3>
+              <div class="profileSelectWrapper" style="flex:1 1 100%;min-width:0;">
+                <select id="profileSelect" style="width:100%;">
+                  <option value="light-industrial" selected>Light Industrial (Entry-Level) - Default</option>
+                  <option value="clerical">Clerical / Administrative</option>
+                  <option value="skilled-labor">Skilled Labor (Forklift, Maintenance, Press Ops)</option>
+                  <option value="professional">Professional / Technical (IT, Engineering, Analyst)</option>
+                </select>
+                <div class="profileHint" style="margin-top:8px;text-align:center;">Select from dropdown and/or manually adjust values below</div>
+              </div>
+            </div>
             <div class="row">
               <div>
                 <div class="label"><span>Branch Interviews Show Rate</span><span class="valueTag" id="val-show">60%</span></div>
-                <input id="show" type="range" min="0" max="100" step="1" value="60">
+                <input id="show" type="range" min="0" max="100" step="1" value="60" oninput="if(window.updateShow)window.updateShow(this.value)">
               </div>
               <div>
-                <div class="label"><span>Passed Interviews Rate</span><span class="valueTag" id="val-passInt">80%</span></div>
-                <input id="passInt" type="range" min="0" max="100" step="1" value="80">
+                <div class="label"><span>Passed Interviews Rate</span><span class="valueTag" id="val-passInt">75%</span></div>
+                <input id="passInt" type="range" min="0" max="100" step="1" value="75" oninput="if(window.updatePassInt)window.updatePassInt(this.value)">
               </div>
               <div>
-                <div class="label"><span>Passed Screenings Rate</span><span class="valueTag" id="val-passScreen">90%</span></div>
-                <input id="passScreen" type="range" min="0" max="100" step="1" value="90">
+                <div class="label"><span>Passed Screenings Rate</span><span class="valueTag" id="val-passScreen">80%</span></div>
+                <input id="passScreen" type="range" min="0" max="100" step="1" value="80" oninput="if(window.updatePassScreen)window.updatePassScreen(this.value)">
               </div>
               <div>
                 <div class="label"><span>1st Day Arrival Rate</span><span class="valueTag" id="val-arrive">75%</span></div>
-                <input id="arrive" type="range" min="0" max="100" step="1" value="75">
+                <input id="arrive" type="range" min="0" max="100" step="1" value="75" oninput="if(window.updateArrive)window.updateArrive(this.value)">
               </div>
             </div>
           </div>
@@ -456,17 +508,25 @@
             </div>
             <div class="row">
               <div class="full" id="intWrap">
-                <div class="label"><span>Branch Interviews Scheduled per Recruiter / Day</span><span class="valueTag" id="val-intpd">4.2</span></div>
-                <input id="intpd" type="range" min="0" max="30" step="0.1" value="4.2">
+                <div class="label"><span>Branch Interviews Scheduled per Recruiter / Day</span><span class="valueTag" id="val-intpd">10</span></div>
+                <input id="intpd" type="range" min="0" max="30" step="0.1" value="10" oninput="if(window.updateIntpd)window.updateIntpd(this.value)">
               </div>
               <div class="full" id="onbWrap" style="display:none;">
-                <div class="label"><span>Onboards per Recruiter / Day</span><span class="valueTag" id="val-onbpd">1.2</span></div>
-                <input id="onbpd" type="range" min="0" max="10" step="0.1" value="1.2">
+                <div class="label"><span>Onboards per Recruiter / Day</span><span class="valueTag" id="val-onbpd">15</span></div>
+                <input id="onbpd" type="range" min="0" max="20" step="0.1" value="15" oninput="if(window.updateOnbpd)window.updateOnbpd(this.value)">
               </div>
               <div class="full">
                 <div class="label"><span>Working Days / Week</span><span class="valueTag" id="val-days">5</span></div>
-                <input id="days" type="range" min="1" max="7" step="1" value="5">
+                <input id="days" type="range" min="1" max="7" step="1" value="5" oninput="if(window.updateDays)window.updateDays(this.value)">
               </div>
+            </div>
+          </div>
+
+          <div class="section" style="margin-top:14px;">
+            <h3>Recruiter Calculation Logic</h3>
+            <div style="font-size:12px;color:var(--muted);line-height:1.6;">
+              <div style="margin-bottom:8px;"><strong>Interviews Mode:</strong> <em>Recruiters = Interviews Required ÷ (Interviews per Day × Working Days per Week)</em></div>
+              <div><strong>Onboards Mode:</strong> <em>Recruiters = Screenings Initiated ÷ (Onboards per Day × Working Days per Week)</em></div>
             </div>
           </div>
         </div>
@@ -474,11 +534,20 @@
         <div>
           <div class="grid" style="grid-template-columns:1fr;gap:12px;margin-bottom:12px;">
             <div class="kpi">
-              <div class="title">Interviews Required / Week</div>
-              <div class="number" id="kpi-interviews">0</div>
-              <div class="subline">Derived from Excel funnel</div>
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;">
+                <div style="flex:1;text-align:center;">
+                  <div class="title">Interviews Required / Week</div>
+                  <div class="number" id="kpi-interviews">0</div>
+                  <div class="subline" style="font-style:italic;">Based on performance assumptions entered</div>
+                </div>
+                <div style="flex:1;text-align:center;">
+                  <div class="title">Recruiting Ratio</div>
+                  <div class="number" id="kpi-ratio" style="font-size:28px;">0:0</div>
+                  <div class="subline">Scheduled → Start</div>
+                </div>
+              </div>
             </div>
-            <div class="kpi">
+            <div class="kpi" style="text-align:center;">
               <div class="title">Recruiters Needed</div>
               <div class="number" id="kpi-recruiters">0</div>
               <div class="subline" id="kpi-hint"></div>
@@ -520,138 +589,517 @@
   </main>
 </div>
 
-<script>
-(function() {
-  'use strict';
+<script type="text/javascript">
+  // Debug logging
+  console.log('Script tag loaded');
   
-  var params = new URLSearchParams(location.search);
-  var appRoot = document.getElementById('appRoot');
-  
-  var isInIframe = window.self !== window.top;
-  var isTeams = params.get('mode') === 'teams' || isInIframe;
-  
-  if (isTeams || isInIframe) {
-    appRoot.classList.add('teams-mode');
-    var fullscreenBtn = document.getElementById('btnFullscreen');
-    if (fullscreenBtn) fullscreenBtn.style.display = 'none';
-  }
-  
-  if (params.get('theme') === 'dark') {
-    document.documentElement.setAttribute('data-theme','dark');
-  }
-
-  var el = function(id) { return document.getElementById(id); };
-  
-  var DEFAULTS = {
-    starts: 75, show: 0.60, passInt: 0.80, passScreen: 0.90, arrive: 0.75,
-    mode: 'interviews', intpd: 4.2, onbpd: 1.2, days: 5
-  };
-  var state = {};
-  for (var key in DEFAULTS) {
-    if (DEFAULTS.hasOwnProperty(key)) state[key] = DEFAULTS[key];
-  }
-
-  function syncRanges(){
-    el('starts').value = state.starts; el('val-starts').textContent = state.starts;
-    el('show').value = Math.round(state.show*100); el('val-show').textContent = Math.round(state.show*100)+'%';
-    el('passInt').value = Math.round(state.passInt*100); el('val-passInt').textContent = Math.round(state.passInt*100)+'%';
-    el('passScreen').value = Math.round(state.passScreen*100); el('val-passScreen').textContent = Math.round(state.passScreen*100)+'%';
-    el('arrive').value = Math.round(state.arrive*100); el('val-arrive').textContent = Math.round(state.arrive*100)+'%';
-    el('intpd').value = state.intpd; el('val-intpd').textContent = state.intpd.toFixed(1);
-    el('onbpd').value = state.onbpd; el('val-onbpd').textContent = state.onbpd.toFixed(1);
-    el('days').value = state.days; el('val-days').textContent = state.days;
-    if(state.mode==='interviews'){
-      el('mode-int').classList.add('active'); el('mode-onb').classList.remove('active');
-      el('intWrap').style.display='block'; el('onbWrap').style.display='none';
-    } else {
-      el('mode-onb').classList.add('active'); el('mode-int').classList.remove('active');
-      el('intWrap').style.display='none'; el('onbWrap').style.display='block';
-    }
-  }
-
-  function bindRange(id, key){
-    var input = el(id), tag = el('val-'+key);
-    input.addEventListener('input', function(){
-      var val = parseFloat(input.value);
-      if(['show','passInt','passScreen','arrive'].indexOf(key) !== -1) {
-        state[key] = val/100; tag.textContent = Math.round(val)+'%';
-      } else {
-        state[key] = val;
-        tag.textContent = (key==='intpd'||key==='onbpd') ? val.toFixed(1) : val;
+  // SharePoint-compatible initialization - multiple fallbacks
+  (function() {
+    'use strict';
+    
+    console.log('IIFE executing');
+    
+    var initialized = false;
+    
+    function initCalculator() {
+      console.log('initCalculator called, initialized:', initialized);
+      
+      if (initialized) return;
+      
+      // Check if required elements exist
+      var appRoot = document.getElementById('appRoot');
+      if (!appRoot) {
+        console.log('appRoot not found, retrying...');
+        // Retry after a short delay if elements aren't ready
+        setTimeout(initCalculator, 100);
+        return;
       }
-      calc();
-    });
-  }
+      
+      console.log('Initializing calculator...');
+      initialized = true;
+      
+      try {
+        // Teams detection and initialization
+        var params = new URLSearchParams(location.search);
+        var appRoot = document.getElementById('appRoot');
+        
+        // Detect Teams environment
+        var isInIframe = window.self !== window.top;
+        var isTeams = params.get('mode') === 'teams' ||
+                        window.location.href.indexOf('teams.microsoft.com') !== -1 ||
+                        (isInIframe && (document.referrer.indexOf('teams.microsoft.com') !== -1 || 
+                                        window.location.search.indexOf('teams') !== -1));
+        
+        // Apply Teams mode
+        if (appRoot) {
+          if (isTeams || isInIframe) {
+            appRoot.classList.add('teams-mode');
+            // Hide fullscreen button in Teams (doesn't work in iframe)
+            setTimeout(function() {
+              var fullscreenBtn = document.getElementById('btnFullscreen');
+              if (fullscreenBtn) fullscreenBtn.classList.add('hidden');
+            }, 0);
+          }
+        }
+        
+        // Theme handling
+        if (params.get('theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme','dark');
+        }
 
-  ['starts','show','passInt','passScreen','arrive','intpd','onbpd','days'].forEach(function(id){ bindRange(id, id); });
+        // Ensure proper height handling in iframe
+        function adjustHeight() {
+          if (isTeams) {
+            document.body.style.height = '100%';
+            document.documentElement.style.height = '100%';
+          }
+        }
+        
+        // Adjust on load and resize
+        window.addEventListener('load', adjustHeight);
+        window.addEventListener('resize', adjustHeight);
+        
+        // Try to communicate with Teams iframe (if available)
+        if (isTeams && window.parent !== window) {
+          try {
+            // Notify parent of ready state
+            window.parent.postMessage({ type: 'ready', source: 'offshore-calculator' }, '*');
+          } catch(e) {
+            // Cross-origin restrictions - ignore
+          }
+        }
 
-  el('mode-int').addEventListener('click',function(){ state.mode='interviews'; syncRanges(); calc(); });
-  el('mode-onb').addEventListener('click',function(){ state.mode='onboards'; syncRanges(); calc(); });
-  el('btnReset').addEventListener('click',function(){
-    for(var k in DEFAULTS) if(DEFAULTS.hasOwnProperty(k)) state[k]=DEFAULTS[k];
-    syncRanges(); calc();
-  });
-  el('btnDark').addEventListener('click',function(){
-    var cur = document.documentElement.getAttribute('data-theme');
-    if(cur==='dark') document.documentElement.removeAttribute('data-theme');
-    else document.documentElement.setAttribute('data-theme','dark');
-  });
-  el('btnFullscreen').addEventListener('click',function(){
-    if(isInIframe){ window.open(location.href.replace(/\?.*$/,''),'_blank'); }
-    else { 
-      var elem = document.documentElement;
-      if(!document.fullscreenElement && elem.requestFullscreen) elem.requestFullscreen();
-      else if(document.exitFullscreen) document.exitFullscreen();
+        var el = function(id) {
+          var elem = document.getElementById(id);
+          if (!elem) {
+            console.error('Element not found:', id);
+          }
+          return elem;
+        };
+        
+        var DEFAULTS = {
+          starts: 75, 
+          show: 0.60, 
+          passInt: 0.75, 
+          passScreen: 0.80, 
+          arrive: 0.75,
+          mode: 'interviews', 
+          intpd: 10, 
+          onbpd: 15, 
+          days: 5
+        };
+        
+        // Recruiting profile data
+        var PROFILES = {
+          'light-industrial': {
+            name: 'Light Industrial (Entry-Level)',
+            show: 0.60,
+            passScreen: 0.80,
+            passInt: 0.75,
+            arrive: 0.75,
+            intpd: 10.0
+          },
+          'clerical': {
+            name: 'Clerical / Administrative',
+            show: 0.70,
+            passScreen: 0.80,
+            passInt: 0.60,
+            arrive: 0.85,
+            intpd: 8.0
+          },
+          'skilled-labor': {
+            name: 'Skilled Labor (Forklift, Maintenance, Press Ops)',
+            show: 0.65,
+            passScreen: 0.70,
+            passInt: 0.50,
+            arrive: 0.85,
+            intpd: 6.0
+          },
+          'professional': {
+            name: 'Professional / Technical (IT, Engineering, Analyst)',
+            show: 0.75,
+            passScreen: 0.65,
+            passInt: 0.45,
+            arrive: 0.90,
+            intpd: 4.0
+          }
+        };
+        var state = {};
+        for (var key in DEFAULTS) {
+          if (DEFAULTS.hasOwnProperty(key)) {
+            state[key] = DEFAULTS[key];
+          }
+        }
+        
+        // Make state globally accessible for inline handlers
+        window.calculatorState = state;
+
+        function syncRangesFromState(){
+          var startsEl = el('starts');
+          var showEl = el('show');
+          var passIntEl = el('passInt');
+          var passScreenEl = el('passScreen');
+          var arriveEl = el('arrive');
+          var intpdEl = el('intpd');
+          var onbpdEl = el('onbpd');
+          var daysEl = el('days');
+          
+          if (startsEl) {
+            startsEl.value = String(state.starts);
+            var startsTag = el('val-starts');
+            if (startsTag) startsTag.textContent = state.starts;
+          }
+          if (showEl) {
+            showEl.value = String(Math.round(state.show*100));
+            var showTag = el('val-show');
+            if (showTag) showTag.textContent = Math.round(state.show*100)+'%';
+          }
+          if (passIntEl) {
+            passIntEl.value = String(Math.round(state.passInt*100));
+            var passIntTag = el('val-passInt');
+            if (passIntTag) passIntTag.textContent = Math.round(state.passInt*100)+'%';
+          }
+          if (passScreenEl) {
+            passScreenEl.value = String(Math.round(state.passScreen*100));
+            var passScreenTag = el('val-passScreen');
+            if (passScreenTag) passScreenTag.textContent = Math.round(state.passScreen*100)+'%';
+          }
+          if (arriveEl) {
+            arriveEl.value = String(Math.round(state.arrive*100));
+            var arriveTag = el('val-arrive');
+            if (arriveTag) arriveTag.textContent = Math.round(state.arrive*100)+'%';
+          }
+          if (intpdEl) {
+            intpdEl.value = String(state.intpd);
+            var intpdTag = el('val-intpd');
+            if (intpdTag) intpdTag.textContent = state.intpd.toFixed(1);
+          }
+          if (onbpdEl) {
+            onbpdEl.value = String(state.onbpd);
+            var onbpdTag = el('val-onbpd');
+            if (onbpdTag) onbpdTag.textContent = state.onbpd.toFixed(1);
+          }
+          if (daysEl) {
+            daysEl.value = String(state.days);
+            var daysTag = el('val-days');
+            if (daysTag) daysTag.textContent = state.days;
+          }
+          
+          var modeInt = el('mode-int');
+          var modeOnb = el('mode-onb');
+          var intWrap = el('intWrap');
+          var onbWrap = el('onbWrap');
+          
+          if(state.mode==='interviews'){
+            if (modeInt) modeInt.classList.add('active');
+            if (modeOnb) modeOnb.classList.remove('active');
+            if (intWrap) intWrap.style.display='block';
+            if (onbWrap) onbWrap.style.display='none';
+          } else {
+            if (modeOnb) modeOnb.classList.add('active');
+            if (modeInt) modeInt.classList.remove('active');
+            if (intWrap) intWrap.style.display='none';
+            if (onbWrap) onbWrap.style.display='block';
+          }
+        }
+
+        function arrayIncludes(arr, val) {
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i] === val) return true;
+          }
+          return false;
+        }
+
+        function bindRange(id, key){
+          var input = el(id);
+          if (!input) {
+            console.error('Input not found:', id);
+            return;
+          }
+          var tag = el('val-'+key) || el('val-'+id);
+          if (!tag) {
+            console.error('Tag not found for:', key);
+            return;
+          }
+          input.addEventListener('input', function(){
+            var val = parseFloat(input.value);
+            if(arrayIncludes(['show','passInt','passScreen','arrive'], key)) { 
+              state[key] = val/100; 
+              tag.textContent = Math.round(val)+'%'; 
+            } else { 
+              state[key] = val; 
+              tag.textContent = (key==='intpd'||key==='onbpd') ? val.toFixed(1) : val; 
+            }
+            calc();
+          });
+        }
+
+        // Bind all range inputs
+        var rangeIds = ['starts','show','passInt','passScreen','arrive','intpd','onbpd','days'];
+        for (var i = 0; i < rangeIds.length; i++) {
+          bindRange(rangeIds[i], rangeIds[i]);
+        }
+
+        // Bind mode toggle buttons
+        var modeIntBtn = el('mode-int');
+        var modeOnbBtn = el('mode-onb');
+        if (modeIntBtn) {
+          modeIntBtn.addEventListener('click', function(){ 
+            state.mode='interviews'; 
+            syncRangesFromState(); 
+            calc(); 
+          });
+        }
+        if (modeOnbBtn) {
+          modeOnbBtn.addEventListener('click', function(){ 
+            state.mode='onboards'; 
+            syncRangesFromState(); 
+            calc(); 
+          });
+        }
+
+        // Bind profile selector
+        var profileSelect = el('profileSelect');
+        if (profileSelect) {
+          profileSelect.addEventListener('change', function(){
+            var profileKey = this.value;
+            if (PROFILES[profileKey]) {
+              var profile = PROFILES[profileKey];
+              state.show = profile.show;
+              state.passScreen = profile.passScreen;
+              state.passInt = profile.passInt;
+              state.arrive = profile.arrive;
+              state.intpd = profile.intpd;
+              syncRangesFromState();
+              calc();
+            }
+          });
+        }
+
+        // Bind reset button
+        var resetBtn = el('btnReset');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', function(){ 
+            for (var key in DEFAULTS) {
+              if (DEFAULTS.hasOwnProperty(key)) {
+                state[key] = DEFAULTS[key];
+              }
+            }
+            if (profileSelect) {
+              profileSelect.value = 'light-industrial';
+            }
+            syncRangesFromState(); 
+            calc(); 
+          });
+        }
+
+        // Bind dark mode button
+        var darkBtn = el('btnDark');
+        if (darkBtn) {
+          darkBtn.addEventListener('click', function(){
+            var cur = document.documentElement.getAttribute('data-theme');
+            if(cur==='dark') document.documentElement.removeAttribute('data-theme');
+            else document.documentElement.setAttribute('data-theme','dark');
+          });
+        }
+
+        // Bind fullscreen button
+        var fullscreenBtn = el('btnFullscreen');
+        if (fullscreenBtn) {
+          fullscreenBtn.addEventListener('click', function(){
+            if (isInIframe) {
+              // In iframe, open in new window instead
+              window.open(window.location.href.replace(/\?.*$/, ''), '_blank');
+            } else {
+              var elem = document.documentElement; 
+              if(!document.fullscreenElement){ 
+                if (elem.requestFullscreen) elem.requestFullscreen();
+              } else { 
+                if (document.exitFullscreen) document.exitFullscreen();
+              }
+            }
+          });
+        }
+
+        function formatInt(n){ 
+          return new Intl.NumberFormat().format(Math.round(n)); 
+        }
+
+        function calc(){
+          try {
+            // Use window.calculatorState if state isn't accessible
+            var calcState = window.calculatorState || state;
+            var arrivals = calcState.starts;
+            var confirmed = arrivals / Math.max(0.0001, calcState.arrive);
+            var screens = confirmed / Math.max(0.0001, calcState.passScreen);
+            var conducted = screens / Math.max(0.0001, calcState.passInt);
+            var scheduled = conducted / Math.max(0.0001, calcState.show);
+
+            // KPIs
+            var interviewsReq = Math.ceil(scheduled);
+            var recruiters = 0;
+            var hint = '';
+            if(calcState.mode==='interviews'){
+              var perWeek = Math.max(0.01, calcState.intpd * calcState.days);
+              recruiters = Math.ceil(interviewsReq / perWeek);
+              hint = calcState.intpd.toFixed(1) + ' interviews/day · ' + calcState.days + ' days';
+            } else {
+              var perWeek = Math.max(0.01, calcState.onbpd * calcState.days);
+              recruiters = Math.ceil(screens / perWeek);
+              hint = calcState.onbpd.toFixed(1) + ' onboards/day · ' + calcState.days + ' days';
+            }
+
+            // Daily Interview Slots Required (team total)
+            var dailySlots = Math.ceil(interviewsReq / Math.max(1, calcState.days));
+
+            // Calculate Recruiting Ratio (Scheduled → Start)
+            // Format as 1:X where X is scheduled/starts, rounded to 1 decimal
+            function calculateRatio(scheduled, starts) {
+              if (scheduled === 0 || starts === 0) return '0:0';
+              var ratio = scheduled / starts;
+              return '1:' + ratio.toFixed(1);
+            }
+            var recruitingRatio = calculateRatio(scheduled, arrivals);
+
+            // update KPIs
+            var kpiInterviews = el('kpi-interviews');
+            var kpiRecruiters = el('kpi-recruiters');
+            var kpiHint = el('kpi-hint');
+            var kpiDailySlots = el('kpi-dailyslots');
+            var kpiRatio = el('kpi-ratio');
+            
+            if (kpiInterviews) kpiInterviews.textContent = formatInt(interviewsReq);
+            if (kpiRecruiters) kpiRecruiters.textContent = formatInt(recruiters);
+            if (kpiHint) kpiHint.textContent = hint;
+            if (kpiDailySlots) kpiDailySlots.textContent = formatInt(dailySlots);
+            if (kpiRatio) kpiRatio.textContent = recruitingRatio;
+
+            // update bars & numbers
+            var max = Math.max(1, scheduled);
+            function width(v){ return Math.max(2, Math.round((v/max)*100)); }
+            
+            var nScheduled = el('n-scheduled');
+            var nConducted = el('n-conducted');
+            var nScreens = el('n-screens');
+            var nConfirmed = el('n-confirmed');
+            var nArrivals = el('n-arrivals');
+            
+            if (nScheduled) nScheduled.textContent = formatInt(scheduled);
+            if (nConducted) nConducted.textContent = formatInt(conducted);
+            if (nScreens) nScreens.textContent = formatInt(screens);
+            if (nConfirmed) nConfirmed.textContent = formatInt(confirmed);
+            if (nArrivals) nArrivals.textContent = formatInt(arrivals);
+
+            var barScheduled = el('bar-scheduled');
+            var barConducted = el('bar-conducted');
+            var barScreens = el('bar-screens');
+            var barConfirmed = el('bar-confirmed');
+            var barArrivals = el('bar-arrivals');
+            
+            if (barScheduled) barScheduled.style.width = width(scheduled)+'%';
+            if (barConducted) barConducted.style.width = width(conducted)+'%';
+            if (barScreens) barScreens.style.width = width(screens)+'%';
+            if (barConfirmed) barConfirmed.style.width = width(confirmed)+'%';
+            if (barArrivals) barArrivals.style.width = width(arrivals)+'%';
+          } catch(error) {
+            console.error('Calculation error:', error);
+          }
+        }
+
+        // Expose update functions globally for inline event handlers
+        window.updateStarts = function(val) {
+          var calcState = window.calculatorState || state;
+          calcState.starts = parseFloat(val);
+          var tag = document.getElementById('val-starts');
+          if (tag) tag.textContent = val;
+          if (window.calculatorCalc) window.calculatorCalc();
+          else calc();
+        };
+        window.updateShow = function(val) {
+          var calcState = window.calculatorState || state;
+          calcState.show = parseFloat(val)/100;
+          var tag = document.getElementById('val-show');
+          if (tag) tag.textContent = Math.round(val)+'%';
+          if (window.calculatorCalc) window.calculatorCalc();
+          else calc();
+        };
+        window.updatePassInt = function(val) {
+          var calcState = window.calculatorState || state;
+          calcState.passInt = parseFloat(val)/100;
+          var tag = document.getElementById('val-passInt');
+          if (tag) tag.textContent = Math.round(val)+'%';
+          if (window.calculatorCalc) window.calculatorCalc();
+          else calc();
+        };
+        window.updatePassScreen = function(val) {
+          var calcState = window.calculatorState || state;
+          calcState.passScreen = parseFloat(val)/100;
+          var tag = document.getElementById('val-passScreen');
+          if (tag) tag.textContent = Math.round(val)+'%';
+          if (window.calculatorCalc) window.calculatorCalc();
+          else calc();
+        };
+        window.updateArrive = function(val) {
+          var calcState = window.calculatorState || state;
+          calcState.arrive = parseFloat(val)/100;
+          var tag = document.getElementById('val-arrive');
+          if (tag) tag.textContent = Math.round(val)+'%';
+          if (window.calculatorCalc) window.calculatorCalc();
+          else calc();
+        };
+        window.updateIntpd = function(val) {
+          var calcState = window.calculatorState || state;
+          calcState.intpd = parseFloat(val);
+          var tag = document.getElementById('val-intpd');
+          if (tag) tag.textContent = parseFloat(val).toFixed(1);
+          if (window.calculatorCalc) window.calculatorCalc();
+          else calc();
+        };
+        window.updateOnbpd = function(val) {
+          var calcState = window.calculatorState || state;
+          calcState.onbpd = parseFloat(val);
+          var tag = document.getElementById('val-onbpd');
+          if (tag) tag.textContent = parseFloat(val).toFixed(1);
+          if (window.calculatorCalc) window.calculatorCalc();
+          else calc();
+        };
+        window.updateDays = function(val) {
+          var calcState = window.calculatorState || state;
+          calcState.days = parseFloat(val);
+          var tag = document.getElementById('val-days');
+          if (tag) tag.textContent = val;
+          if (window.calculatorCalc) window.calculatorCalc();
+          else calc();
+        };
+        
+        // Make calc function globally accessible
+        window.calculatorCalc = calc;
+
+        // Initialize
+        syncRangesFromState();
+        calc();
+        console.log('Calculator initialized successfully');
+      } catch(error) {
+        console.error('Initialization error:', error);
+      }
     }
-  });
-
-  function formatInt(n){ return new Intl.NumberFormat().format(Math.round(n)); }
-
-  function calc(){
-    var arrivals = state.starts;
-    var confirmed = arrivals / Math.max(0.0001, state.arrive);
-    var screens = confirmed / Math.max(0.0001, state.passScreen);
-    var conducted = screens / Math.max(0.0001, state.passInt);
-    var scheduled = conducted / Math.max(0.0001, state.show);
-
-    var interviewsReq = Math.ceil(scheduled);
-    var recruiters = 0, hint = '';
-    if(state.mode==='interviews'){
-      var perWeek = Math.max(0.01, state.intpd * state.days);
-      recruiters = Math.ceil(interviewsReq / perWeek);
-      hint = state.intpd.toFixed(1) + ' interviews/day · ' + state.days + ' days';
+    
+    // Multiple initialization methods for SharePoint compatibility
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCalculator);
     } else {
-      var perWeek = Math.max(0.01, state.onbpd * state.days);
-      recruiters = Math.ceil(state.starts / perWeek);
-      hint = state.onbpd.toFixed(1) + ' onboards/day · ' + state.days + ' days';
+      // DOM already loaded, try immediately
+      initCalculator();
     }
-
-    var dailySlots = Math.ceil(interviewsReq / Math.max(1, state.days));
-
-    el('kpi-interviews').textContent = formatInt(interviewsReq);
-    el('kpi-recruiters').textContent = formatInt(recruiters);
-    el('kpi-hint').textContent = hint;
-    el('kpi-dailyslots').textContent = formatInt(dailySlots);
-
-    var max = Math.max(1, scheduled);
-    function width(v){ return Math.max(2, Math.round((v/max)*100)); }
-    el('n-scheduled').textContent = formatInt(scheduled);
-    el('n-conducted').textContent = formatInt(conducted);
-    el('n-screens').textContent = formatInt(screens);
-    el('n-confirmed').textContent = formatInt(confirmed);
-    el('n-arrivals').textContent = formatInt(arrivals);
-
-    el('bar-scheduled').style.width = width(scheduled)+'%';
-    el('bar-conducted').style.width = width(conducted)+'%';
-    el('bar-screens').style.width = width(screens)+'%';
-    el('bar-confirmed').style.width = width(confirmed)+'%';
-    el('bar-arrivals').style.width = width(arrivals)+'%';
-  }
-
-  syncRanges();
-  calc();
-})();
+    
+    // Fallback: window.onload
+    window.addEventListener('load', function() {
+      setTimeout(initCalculator, 0);
+    });
+    
+    // Immediate fallback for SharePoint
+    setTimeout(initCalculator, 500);
+  })();
 </script>
 </body>
 </html>
-
