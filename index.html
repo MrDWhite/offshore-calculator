@@ -347,7 +347,12 @@
             </div>
 
             <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--glass-border);">
+              
               <div class="control-group">
+                <div class="label-row"><span>Outreach Success Rate</span><span class="val-tag" id="val-outreach">33%</span></div>
+                <input id="outreach" type="range" min="0" max="100" value="33">
+              </div>
+<div class="control-group">
                 <div class="label-row"><span>Interview Show Rate</span><span class="val-tag" id="val-show">60%</span></div>
                 <input id="show" type="range" min="0" max="100" value="60">
               </div>
@@ -374,12 +379,12 @@
 
             <div class="control-group">
               <div class="label-row">
-                <span>Offshore Recruiting Effectiveness</span>
-                <span class="val-tag" id="val-eff">75%</span>
+                <span>Local Sourcing Required</span>
+                <span class="val-tag" id="val-eff">25%</span>
               </div>
-              <input id="eff" type="range" min="0" max="100" value="75">
+              <input id="eff" type="range" min="0" max="100" value="25">
               <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">
-                <span id="txt-admin">Remaining 25% routed to Onshore Admin Support ($20.00/hr)</span>
+                <span id="txt-admin">Local sourcing set to 25%: routes 25% to Onshore Admin Support ($20.00/hr) and 75% to offshore recruiters.</span>
               </div>
             </div>
 
@@ -546,8 +551,13 @@
             </h3>
 
             <div class="funnel-container">
+              
               <div class="bar-row">
-                <div class="bar-meta"><span>Interviews Required</span><span id="n-sched">0</span></div>
+                <div class="bar-meta"><span>Candidate Outreach Attempts</span><span id="n-outreach">0</span></div>
+                <div class="bar-track"><div class="bar-fill c-blue" id="b-outreach" style="width:100%; opacity:0.55;"></div></div>
+              </div>
+<div class="bar-row">
+                <div class="bar-meta"><span>Scheduled Interviews Required</span><span id="n-sched">0</span></div>
                 <div class="bar-track"><div class="bar-fill c-blue" id="b-sched" style="width:100%"></div></div>
               </div>
               <div class="bar-row">
@@ -572,7 +582,7 @@
                 </div>
               </div>
               <div style="margin-top:16px; font-size:12px; opacity:0.6; text-align:right;">
-                Conversion Ratio: <strong id="val-ratio">0:1</strong> (Interviews : Start)
+                Conversion Ratio: <strong id="val-ratio">0:1</strong> (Scheduled Interviews : Start)
               </div>
             </div>
           </div>
@@ -586,16 +596,17 @@
 <script>
 (function() {
   const PRESETS = {
-    "light-industrial": { show: 60, pass: 75, screen: 80, arrive: 75 },
-    "skilled-trades":   { show: 70, pass: 65, screen: 85, arrive: 80 },
-    "professional":     { show: 80, pass: 70, screen: 90, arrive: 85 },
-    "high-vol":         { show: 50, pass: 80, screen: 75, arrive: 65 },
+    "light-industrial": { outreach: 33, show: 60, pass: 75, screen: 80, arrive: 75 },
+    "skilled-trades":   { outreach: 28, show: 70, pass: 65, screen: 85, arrive: 80 },
+    "professional":     { outreach: 45, show: 80, pass: 80, screen: 95, arrive: 90 },
+    "high-vol":         { outreach: 25, show: 55, pass: 80, screen: 75, arrive: 65 },
   };
 
   const DEFAULTS = {
     starts: 76,
+    outreach: 33,
     show: 60, pass: 75, screen: 80, arrive: 75,
-    eff: 75,
+    eff: 25,
     self: 25,
     intpd: 10,
     onbpd: 13,
@@ -621,9 +632,13 @@
     const passed    = screened   / (state.pass   / 100);
     const scheduled = passed     / (state.show   / 100);
 
+    // Candidate outreach (top-of-funnel volume)
+    const outreachAttempts = scheduled / (state.outreach / 100);
+
     // 2. Workload splits
-    const volOffshore     = scheduled * (state.eff / 100);
-    const volAdmin        = scheduled * ((100 - state.eff) / 100);
+    // eff = Local Sourcing Required % (routed to onshore sourcing/admin support)
+    const volAdmin        = scheduled * (state.eff / 100);
+    const volOffshore     = scheduled * ((100 - state.eff) / 100);
     const volOnboarding   = passed * ((100 - state.self) / 100);
     const volFinalization = screened;
 
@@ -683,9 +698,13 @@
     }
 
     // Funnel bars
-    const fMax = scheduled;
+    const fMax = outreachAttempts;
+
+    el('n-outreach').textContent = fmtInt(outreachAttempts);
+    el('b-outreach').style.width = '100%';
+
     el('n-sched').textContent = fmtInt(scheduled);
-    el('b-sched').style.width = '100%';
+    el('b-sched').style.width = Math.max(1, (scheduled / fMax) * 100) + '%';
 
     el('n-pass').textContent = fmtInt(passed);
     el('b-pass').style.width = Math.max(1, (passed / fMax) * 100) + '%';
@@ -699,24 +718,26 @@
     el('n-starts').textContent = fmtInt(arrivals);
 
     // Efficiency Levers dynamic text
-    const grassPct = 100 - state.eff;
+    const localPct = state.eff;
+    const offshorePct = 100 - state.eff;
     el('txt-admin').textContent =
-      'At ' + state.eff + '%, ' + grassPct + '% is routed to Onshore Admin Support ($' + state.rateAdmin.toFixed(2) + '/hr)';
+      'Local sourcing set to ' + localPct + '%: routes ' + localPct + '% to onshore/local sourcing support ($' + state.rateAdmin.toFixed(2) + '/hr) and ' +
+      offshorePct + '% to offshore recruiters.';
   }
 
   // --- Slider event wiring ---
-  const sliders = ['starts','show','pass','screen','arrive','eff','self','intpd','onbpd','finpd','days'];
+  const sliders = ['starts','outreach','show','pass','screen','arrive','eff','self','intpd','onbpd','finpd','days'];
 
   sliders.forEach(key => {
     el(key).addEventListener('input', (e) => {
       state[key] = parseFloat(e.target.value);
       const badge = el('val-' + key);
       if (badge) {
-        badge.textContent = ['show','pass','screen','arrive','eff','self'].includes(key)
+        badge.textContent = ['outreach','show','pass','screen','arrive','eff','self'].includes(key)
           ? state[key] + '%'
           : state[key];
       }
-      if (['show','pass','screen','arrive'].includes(key)) el('profileSelect').value = 'custom';
+      if (['outreach','show','pass','screen','arrive'].includes(key)) el('profileSelect').value = 'custom';
       calculate();
     });
   });
@@ -740,7 +761,7 @@
   el('profileSelect').addEventListener('change', (e) => {
     const p = PRESETS[e.target.value];
     if (p) {
-      ['show','pass','screen','arrive'].forEach(k => {
+      ['outreach','show','pass','screen','arrive'].forEach(k => {
         state[k] = p[k];
         el(k).value = p[k];
         el('val-' + k).textContent = p[k] + '%';
@@ -764,7 +785,7 @@
       el(k).value = state[k];
       const badge = el('val-' + k);
       if (badge) {
-        badge.textContent = ['show','pass','screen','arrive','eff','self'].includes(k)
+        badge.textContent = ['outreach','show','pass','screen','arrive','eff','self'].includes(k)
           ? state[k] + '%'
           : state[k];
       }
