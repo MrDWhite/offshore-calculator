@@ -379,12 +379,12 @@
 
             <div class="control-group">
               <div class="label-row">
-                <span>Local Sourcing Required</span>
+                <span>Local Hiring Support Required</span>
                 <span class="val-tag" id="val-eff">25%</span>
               </div>
               <input id="eff" type="range" min="0" max="100" value="25">
               <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">
-                <span id="txt-admin">Local sourcing set to 25%: routes 25% to Onshore Admin Support ($20.00/hr) and 75% to offshore recruiters.</span>
+                <span id="txt-admin">Local Hiring Support set to 25%: routes 25% to Local Hiring Support ($20.00/hr) and 75% to offshore recruiters.</span>
               </div>
             </div>
 
@@ -479,11 +479,11 @@
                   <td class="num" id="cost-offrec">$0</td>
                 </tr>
 
-                <!-- Onshore Admin Support -->
+                <!-- Local Hiring Support -->
                 <tr class="row-admin" id="row-admin">
                   <td>
-                    <div style="font-weight:500; color:var(--accent-warn);">Onshore Admin Support</div>
-                    <div style="font-size:11px; color:var(--accent-warn); opacity:0.7;">Onshore</div>
+                    <div style="font-weight:500; color:var(--accent-warn);">Local Hiring Support</div>
+                    <div style="font-size:11px; color:var(--accent-warn); opacity:0.7;">Local</div>
                   </td>
                   <td class="rate-cell">
                     <div class="rate-input-wrap">
@@ -636,7 +636,7 @@
     const outreachAttempts = scheduled / (state.outreach / 100);
 
     // 2. Workload splits
-    // eff = Local Sourcing Required % (routed to onshore sourcing/admin support)
+    // eff = Local Hiring Support Required % (routed to Local Hiring Support)
     const volAdmin        = scheduled * (state.eff / 100);
     const volOffshore     = scheduled * ((100 - state.eff) / 100);
     const volOnboarding   = passed * ((100 - state.self) / 100);
@@ -721,7 +721,7 @@
     const localPct = state.eff;
     const offshorePct = 100 - state.eff;
     el('txt-admin').textContent =
-      'Local sourcing set to ' + localPct + '%: routes ' + localPct + '% to onshore/local sourcing support ($' + state.rateAdmin.toFixed(2) + '/hr) and ' +
+      'Local Hiring Support set to ' + localPct + '%: routes ' + localPct + '% to Local Hiring Support ($' + state.rateAdmin.toFixed(2) + '/hr) and ' +
       offshorePct + '% to offshore recruiters.';
   }
 
