@@ -6,24 +6,30 @@
 <title>Recruiting Resource & Cost Calculator</title>
 <style>
   :root {
-    --bg-grad-start: #5a6676;
+    /* Core Palette - Dark Slate/Glass Default (Matches Reference) */
+    --bg-grad-start: #5a6676; /* Slate grey from image background */
     --bg-grad-end: #3f4857;
+    
     --glass-panel: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.2);
     --glass-highlight: rgba(255, 255, 255, 0.3);
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+    
     --text-main: #ffffff;
     --text-muted: rgba(255, 255, 255, 0.6);
-    --accent-primary: #3b82f6;
+    
+    --accent-primary: #3b82f6; /* Bright Blue */
     --accent-glow: rgba(59, 130, 246, 0.5);
     --accent-success: #10b981;
     --accent-warn: #f59e0b;
     --accent-track: rgba(0, 0, 0, 0.2);
+
     --radius-lg: 24px;
     --radius-md: 16px;
     --radius-sm: 8px;
   }
 
+  /* Light Theme Overrides */
   [data-theme="light"] {
     --bg-grad-start: #e0e7ff;
     --bg-grad-end: #f3f4f6;
@@ -36,7 +42,7 @@
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+  
   body {
     margin: 0; padding: 0;
     height: 100vh;
@@ -46,6 +52,7 @@
     overflow: hidden;
   }
 
+  /* --- Glass Components --- */
   .glass {
     background: var(--glass-panel);
     backdrop-filter: blur(16px);
@@ -63,21 +70,22 @@
     fill: none;
   }
 
+  /* --- Layout --- */
   .app { height: 100%; display: flex; flex-direction: column; }
-
+  
   .appHeader {
     display: flex; align-items: center; justify-content: space-between;
     padding: 16px 24px;
     z-index: 10;
     flex-shrink: 0;
   }
-
-  .brand {
-    display: flex; align-items: center; gap: 12px;
+  
+  .brand { 
+    display: flex; align-items: center; gap: 12px; 
     font-weight: 600; font-size: 18px; letter-spacing: -0.01em;
     text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
-
+  
   .btn {
     border: 1px solid var(--glass-border);
     background: rgba(255,255,255,0.1);
@@ -91,30 +99,31 @@
   }
   .btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
 
-  .appBody {
-    flex: 1;
-    overflow-y: auto;
+  .appBody { 
+    flex: 1; 
+    overflow-y: auto; 
     padding: 20px;
   }
-
+  
   .container { max-width: 1280px; margin: 0 auto; }
-
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
+  
+  .grid { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 24px; 
   }
-  @media(min-width: 1024px) {
-    .grid { grid-template-columns: 420px 1fr; }
+  @media(min-width: 1024px) { 
+    .grid { grid-template-columns: 420px 1fr; } 
   }
 
+  /* --- Cards & Sections --- */
   .card {
     border-radius: var(--radius-lg);
     padding: 24px;
     margin-bottom: 24px;
     transition: transform 0.2s;
   }
-
+  
   h3 {
     margin: 0 0 16px 0;
     font-size: 13px;
@@ -124,11 +133,12 @@
     display: flex; align-items: center; gap: 8px;
   }
 
+  /* --- Inputs / Sliders --- */
   .control-group { margin-bottom: 20px; }
   .control-group:last-child { margin-bottom: 0; }
 
-  .label-row {
-    display: flex; justify-content: space-between; align-items: center;
+  .label-row { 
+    display: flex; justify-content: space-between; align-items: center; 
     margin-bottom: 8px; font-size: 13px; font-weight: 500;
     color: var(--text-muted);
   }
@@ -139,6 +149,7 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Custom Range Slider (Thick Glass Style) */
   input[type=range] {
     width: 100%; -webkit-appearance: none; appearance: none;
     background: transparent; cursor: pointer;
@@ -159,7 +170,7 @@
     transition: transform 0.1s;
   }
   input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
-
+  
   select {
     width: 100%; padding: 10px 14px;
     border-radius: var(--radius-md);
@@ -171,6 +182,7 @@
   }
   option { background: #3f4857; color: #fff; }
 
+  /* --- KPIs --- */
   .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
   .kpi-card {
     border-radius: var(--radius-md);
@@ -184,120 +196,67 @@
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
   }
   .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
-  .kpi-value {
-    font-size: 28px; font-weight: 700; margin: 8px 0 4px 0;
+  .kpi-value { 
+    font-size: 28px; font-weight: 700; margin: 8px 0 4px 0; 
     text-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
   .kpi-sub { font-size: 11px; opacity: 0.7; }
   .kpi-glow { color: #60a5fa; text-shadow: 0 0 12px rgba(59, 130, 246, 0.6); }
 
-  .table-container {
-    border-radius: var(--radius-lg);
-    overflow: auto;
-    margin-bottom: 24px;
+  /* --- Table --- */
+  .table-container { 
+    border-radius: var(--radius-lg); 
+    overflow: hidden; margin-bottom: 24px; 
   }
   .cost-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .cost-table th {
-    text-align: left; padding: 12px 16px;
-    background: rgba(0,0,0,0.1);
+  .cost-table th { 
+    text-align: left; padding: 12px 16px; 
+    background: rgba(0,0,0,0.1); 
     color: var(--text-muted); font-weight: 600;
-    white-space: nowrap;
   }
-  .cost-table th.num { text-align: right; }
-  .cost-table td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--glass-border);
+  .cost-table td { 
+    padding: 12px 16px; 
+    border-bottom: 1px solid var(--glass-border); 
   }
   .cost-table tr:last-child td { border-bottom: none; }
   .cost-table .num { text-align: right; font-variant-numeric: tabular-nums; }
-
+  
   .row-highlight { background: rgba(59, 130, 246, 0.08); }
   .row-dim { background: rgba(255, 255, 255, 0.02); }
   .row-offshore { background: rgba(59, 130, 246, 0.1); }
   .row-onshore { background: rgba(16, 185, 129, 0.1); }
-  .row-admin { background: rgba(245, 158, 11, 0.12); }
+  .row-grassroots { background: rgba(245, 158, 11, 0.12); }
   [data-theme="light"] .row-offshore { background: rgba(59, 130, 246, 0.08); }
   [data-theme="light"] .row-onshore { background: rgba(16, 185, 129, 0.08); }
-  [data-theme="light"] .row-admin { background: rgba(245, 158, 11, 0.1); }
-
-  /* --- Rate Input Styles --- */
-  .rate-cell {
-    padding: 8px 12px !important;
-  }
-  .rate-input-wrap {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    font-size: 13px;
-    color: var(--text-main);
-  }
-  .rate-symbol {
-    font-weight: 500;
-    opacity: 0.7;
-    font-size: 12px;
-  }
-  .rate-input {
-    width: 70px;
-    padding: 5px 6px;
-    border-radius: 6px;
-    border: 1px solid var(--glass-border);
-    background: rgba(0,0,0,0.2);
-    color: var(--text-main);
-    font-size: 13px;
-    font-weight: 600;
-    text-align: right;
-    outline: none;
-    font-variant-numeric: tabular-nums;
-    font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .rate-input:focus {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-  }
-  .rate-input::-webkit-outer-spin-button,
-  .rate-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  .rate-input[type=number] {
-    -moz-appearance: textfield;
-  }
-  .rate-annual {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 3px;
-    font-variant-numeric: tabular-nums;
-  }
-  [data-theme="light"] .rate-input {
-    background: rgba(0,0,0,0.05);
-  }
-  .row-inactive {
-    opacity: 0.45;
-  }
+  [data-theme="light"] .row-grassroots { background: rgba(245, 158, 11, 0.1); }
+  .rate-hint { font-size: 11px; color: var(--text-muted); transition: opacity 0.15s; }
+  .rate-hint[data-hover-only] { opacity: 0; pointer-events: none; }
+  .cost-table tbody tr:hover .rate-hint[data-hover-only] { opacity: 1; }
 
   /* --- Funnel Bars --- */
   .funnel-container { padding-top: 8px; }
   .bar-row { margin-bottom: 14px; }
   .bar-meta { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
-  .bar-track {
-    height: 8px; background: var(--accent-track);
-    border-radius: 4px; overflow: hidden;
+  .bar-track { 
+    height: 8px; background: var(--accent-track); 
+    border-radius: 4px; overflow: hidden; 
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
   }
-  .bar-fill {
-    height: 100%; border-radius: 4px;
+  .bar-fill { 
+    height: 100%; border-radius: 4px; 
     position: relative;
   }
   .bar-fill::after {
     content:''; position: absolute; top:0; left:0; right:0; bottom:0;
     background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
   }
-
+  
+  /* Color utilities */
   .c-blue { background: #3b82f6; box-shadow: 0 0 10px rgba(59,130,246,0.4); }
   .c-purple { background: #8b5cf6; box-shadow: 0 0 10px rgba(139,92,246,0.4); }
   .c-pink { background: #ec4899; box-shadow: 0 0 10px rgba(236,72,153,0.4); }
   .c-emerald { background: #10b981; box-shadow: 0 0 10px rgba(16,185,129,0.4); }
+
 </style>
 </head>
 <body data-theme="dark">
@@ -323,14 +282,14 @@
   <main class="appBody">
     <div class="container">
       <div class="grid">
-
+        
         <div>
           <div class="card glass">
             <h3>
               <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               Recruiting Volume
             </h3>
-
+            
             <div class="control-group">
               <div class="label-row"><span>Weekly Starts (Arrivals) Target</span><span class="val-tag" id="val-starts">76</span></div>
               <input id="starts" type="range" min="1" max="500" value="76">
@@ -345,25 +304,23 @@
                 <option value="custom">Custom Configuration...</option>
               </select>
             </div>
-
+            
             <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--glass-border);">
-              
               <div class="control-group">
-                <div class="label-row"><span>Outreach Success Rate</span><span class="val-tag" id="val-outreach">33%</span></div>
-                <input id="outreach" type="range" min="0" max="100" value="33">
-              </div>
-<div class="control-group">
                 <div class="label-row"><span>Interview Show Rate</span><span class="val-tag" id="val-show">60%</span></div>
                 <input id="show" type="range" min="0" max="100" value="60">
               </div>
+
               <div class="control-group">
                 <div class="label-row"><span>Quality Pass Rate</span><span class="val-tag" id="val-pass">75%</span></div>
                 <input id="pass" type="range" min="0" max="100" value="75">
               </div>
+
               <div class="control-group">
                 <div class="label-row"><span>Screening Pass Rate</span><span class="val-tag" id="val-screen">80%</span></div>
                 <input id="screen" type="range" min="0" max="100" value="80">
               </div>
+
               <div class="control-group">
                 <div class="label-row"><span>Day 1 Arrival Rate</span><span class="val-tag" id="val-arrive">75%</span></div>
                 <input id="arrive" type="range" min="0" max="100" value="75">
@@ -376,15 +333,15 @@
               <svg class="icon" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
               Efficiency Levers
             </h3>
-
+            
             <div class="control-group">
               <div class="label-row">
-                <span>Local Sourcing Required</span>
-                <span class="val-tag" id="val-eff">25%</span>
+                <span>Offshore Recruiting Effectiveness</span>
+                <span class="val-tag" id="val-eff">75%</span>
               </div>
-              <input id="eff" type="range" min="0" max="100" value="25">
+              <input id="eff" type="range" min="0" max="100" value="75">
               <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">
-                <span id="txt-admin">Local sourcing set to 25%: routes 25% to Onshore Admin Support ($20.00/hr) and 75% to offshore recruiters.</span>
+                <span id="txt-grassroots">Remaining 25% routed to Onshore Grassroots ($20/hr)</span>
               </div>
             </div>
 
@@ -405,19 +362,22 @@
               <svg class="icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               Productivity Assumptions (Daily)
             </h3>
-
+            
             <div class="control-group">
               <div class="label-row"><span>Recruiter Interviews / Day</span><span class="val-tag" id="val-intpd">10</span></div>
               <input id="intpd" type="range" min="1" max="30" step="1" value="10">
             </div>
+
             <div class="control-group">
-              <div class="label-row"><span>Onboards Processed / Day</span><span class="val-tag" id="val-onbpd">13</span></div>
-              <input id="onbpd" type="range" min="1" max="30" step="1" value="13">
+              <div class="label-row"><span>Onboards Processed / Day</span><span class="val-tag" id="val-onbpd">20</span></div>
+              <input id="onbpd" type="range" min="1" max="30" step="1" value="20">
             </div>
+
             <div class="control-group">
               <div class="label-row"><span>Finalizations / Day (Onshore)</span><span class="val-tag" id="val-finpd">15</span></div>
               <input id="finpd" type="range" min="1" max="30" step="1" value="15">
             </div>
+            
             <div class="control-group">
               <div class="label-row"><span>Working Days / Week</span><span class="val-tag" id="val-days">5</span></div>
               <input id="days" type="range" min="1" max="7" value="5">
@@ -445,7 +405,7 @@
           </div>
 
           <div class="table-container glass">
-            <div style="padding:16px; border-bottom:1px solid var(--glass-border);">
+             <div style="padding:16px; border-bottom:1px solid var(--glass-border);">
               <h3 style="margin:0;">
                 <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
                 Resource & Cost Breakdown
@@ -455,92 +415,12 @@
               <thead>
                 <tr>
                   <th>Function & Role</th>
-                  <th>Rate</th>
                   <th class="num">FTEs</th>
                   <th class="num">Weekly Cost</th>
                 </tr>
               </thead>
-              <tbody>
-                <!-- Offshore Sourcing / Screening -->
-                <tr class="row-offshore" id="row-offrec">
-                  <td>
-                    <div style="font-weight:500;">Sourcing / Screening</div>
-                    <div style="font-size:11px; color:var(--text-muted);">Offshore</div>
-                  </td>
-                  <td class="rate-cell">
-                    <div class="rate-input-wrap">
-                      <span class="rate-symbol">$</span>
-                      <input type="number" class="rate-input" id="rate-offrec" value="10.38" step="0.01" min="0">
-                      <span class="rate-symbol">/hr</span>
-                    </div>
-                    <div class="rate-annual" id="annual-offrec"></div>
-                  </td>
-                  <td class="num" id="fte-offrec">0</td>
-                  <td class="num" id="cost-offrec">$0</td>
-                </tr>
-
-                <!-- Onshore Admin Support -->
-                <tr class="row-admin" id="row-admin">
-                  <td>
-                    <div style="font-weight:500; color:var(--accent-warn);">Onshore Admin Support</div>
-                    <div style="font-size:11px; color:var(--accent-warn); opacity:0.7;">Onshore</div>
-                  </td>
-                  <td class="rate-cell">
-                    <div class="rate-input-wrap">
-                      <span class="rate-symbol">$</span>
-                      <input type="number" class="rate-input" id="rate-admin" value="20.00" step="0.01" min="0">
-                      <span class="rate-symbol">/hr</span>
-                    </div>
-                    <div class="rate-annual" id="annual-admin"></div>
-                  </td>
-                  <td class="num" id="fte-admin" style="color:var(--accent-warn); font-weight:700;">0</td>
-                  <td class="num" id="cost-admin" style="color:var(--accent-warn);">$0</td>
-                </tr>
-
-                <!-- Offshore Onboarding -->
-                <tr class="row-offshore" id="row-offonb">
-                  <td>
-                    <div style="font-weight:500;">Onboarding Support</div>
-                    <div style="font-size:11px; color:var(--text-muted);">Offshore</div>
-                  </td>
-                  <td class="rate-cell">
-                    <div class="rate-input-wrap">
-                      <span class="rate-symbol">$</span>
-                      <input type="number" class="rate-input" id="rate-offonb" value="10.38" step="0.01" min="0">
-                      <span class="rate-symbol">/hr</span>
-                    </div>
-                    <div class="rate-annual" id="annual-offonb"></div>
-                  </td>
-                  <td class="num" id="fte-offonb">0</td>
-                  <td class="num" id="cost-offonb">$0</td>
-                </tr>
-
-                <!-- Onshore Finalization -->
-                <tr class="row-onshore" id="row-fin">
-                  <td>
-                    <div style="font-weight:500;">Finalization (I-9 / Drug Screen)</div>
-                    <div style="font-size:11px; color:var(--text-muted);">Onshore FTE</div>
-                  </td>
-                  <td class="rate-cell">
-                    <div class="rate-input-wrap">
-                      <span class="rate-symbol">$</span>
-                      <input type="number" class="rate-input" id="rate-fin" value="33.65" step="0.01" min="0">
-                      <span class="rate-symbol">/hr</span>
-                    </div>
-                    <div class="rate-annual" id="annual-fin"></div>
-                  </td>
-                  <td class="num" id="fte-fin">0</td>
-                  <td class="num" id="cost-fin">$0</td>
-                </tr>
-
-                <!-- Total -->
-                <tr style="font-weight:700; background:rgba(255,255,255,0.05);">
-                  <td>Total</td>
-                  <td></td>
-                  <td class="num" id="fte-total">0</td>
-                  <td class="num" id="cost-total">$0</td>
-                </tr>
-              </tbody>
+              <tbody id="costBody">
+                </tbody>
             </table>
           </div>
 
@@ -549,29 +429,28 @@
               <svg class="icon" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
               Recruiting Funnel
             </h3>
-
+            
             <div class="funnel-container">
-              
               <div class="bar-row">
-                <div class="bar-meta"><span>Candidate Outreach Attempts</span><span id="n-outreach">0</span></div>
-                <div class="bar-track"><div class="bar-fill c-blue" id="b-outreach" style="width:100%; opacity:0.55;"></div></div>
-              </div>
-<div class="bar-row">
-                <div class="bar-meta"><span>Scheduled Interviews Required</span><span id="n-sched">0</span></div>
+                <div class="bar-meta"><span>Interviews Required</span><span id="n-sched">0</span></div>
                 <div class="bar-track"><div class="bar-fill c-blue" id="b-sched" style="width:100%"></div></div>
               </div>
+              
               <div class="bar-row">
                 <div class="bar-meta"><span>Passed Interview (Onboard Vol)</span><span id="n-pass">0</span></div>
                 <div class="bar-track"><div class="bar-fill c-purple" id="b-pass" style="width:60%"></div></div>
               </div>
+
               <div class="bar-row">
                 <div class="bar-meta"><span>Passed Screening (Finalize Vol)</span><span id="n-screen">0</span></div>
                 <div class="bar-track"><div class="bar-fill c-pink" id="b-screen" style="width:40%"></div></div>
               </div>
+
               <div class="bar-row">
                 <div class="bar-meta"><span>Confirmed to Start</span><span id="n-conf">0</span></div>
                 <div class="bar-track"><div class="bar-fill c-emerald" id="b-conf" style="width:30%"></div></div>
               </div>
+
               <div class="bar-row" style="margin-top:24px;">
                 <div class="bar-meta">
                   <span style="font-weight:700; color:#fff;">Actual Starts</span>
@@ -581,8 +460,9 @@
                   <div class="bar-fill c-emerald" style="width:100%"></div>
                 </div>
               </div>
+              
               <div style="margin-top:16px; font-size:12px; opacity:0.6; text-align:right;">
-                Conversion Ratio: <strong id="val-ratio">0:1</strong> (Scheduled Interviews : Start)
+                Conversion Ratio: <strong id="val-ratio">0:1</strong> (Interviews : Start)
               </div>
             </div>
           </div>
@@ -595,173 +475,193 @@
 
 <script>
 (function() {
+  // --- Constants & Config ---
   const PRESETS = {
-    "light-industrial": { outreach: 33, show: 60, pass: 75, screen: 80, arrive: 75 },
-    "skilled-trades":   { outreach: 28, show: 70, pass: 65, screen: 85, arrive: 80 },
-    "professional":     { outreach: 45, show: 80, pass: 80, screen: 95, arrive: 90 },
-    "high-vol":         { outreach: 25, show: 55, pass: 80, screen: 75, arrive: 65 },
+    "light-industrial": { show: 60, pass: 75, screen: 80, arrive: 75 },
+    "skilled-trades": { show: 70, pass: 65, screen: 85, arrive: 80 },
+    "professional": { show: 80, pass: 70, screen: 90, arrive: 85 },
+    "high-vol": { show: 50, pass: 80, screen: 75, arrive: 65 },
   };
 
-  const DEFAULTS = {
+  const COSTS = {
+    offshoreYearly: 21600,
+    onshoreYearly: 70000,
+    grassrootsHourly: 20
+  };
+
+  // State
+  let state = {
     starts: 76,
-    outreach: 33,
     show: 60, pass: 75, screen: 80, arrive: 75,
-    eff: 25,
-    self: 25,
-    intpd: 10,
-    onbpd: 13,
-    finpd: 15,
-    days: 5,
-    rateOffRec: 10.38,
-    rateAdmin: 20.00,
-    rateOffOnb: 10.38,
-    rateFin: 33.65
+    eff: 75,  
+    self: 25, 
+    intpd: 10, 
+    onbpd: 20, 
+    finpd: 15, 
+    days: 5
   };
 
-  let state = { ...DEFAULTS };
-
+  // --- Helpers ---
   const el = (id) => document.getElementById(id);
   const fmtUSD = (n) => '$' + Math.round(n).toLocaleString();
   const fmtInt = (n) => Math.round(n).toLocaleString();
 
+  // --- Logic Engine ---
   function calculate() {
-    // 1. Funnel (bottom-up)
-    const arrivals  = state.starts;
-    const confirmed = arrivals   / (state.arrive / 100);
-    const screened  = confirmed  / (state.screen / 100);
-    const passed    = screened   / (state.pass   / 100);
-    const scheduled = passed     / (state.show   / 100);
+    // 1. Funnel Math (Bottom Up)
+    const arrivals = state.starts;
+    const confirmed = arrivals / (state.arrive / 100);
+    const screened = confirmed / (state.screen / 100);
+    const passed = screened / (state.pass / 100);
+    const scheduled = passed / (state.show / 100);
 
-    // Candidate outreach (top-of-funnel volume)
-    const outreachAttempts = scheduled / (state.outreach / 100);
+    // 2. Workload Allocations
+    
+    // RECRUITING: Driven by Scheduled Volume (Top of Funnel)
+    const volOffshore = scheduled * (state.eff / 100);
+    const volGrassroots = scheduled * ((100 - state.eff) / 100);
 
-    // 2. Workload splits
-    // eff = Local Sourcing Required % (routed to onshore sourcing/admin support)
-    const volAdmin        = scheduled * (state.eff / 100);
-    const volOffshore     = scheduled * ((100 - state.eff) / 100);
-    const volOnboarding   = passed * ((100 - state.self) / 100);
+    // ONBOARDING: Driven by Passed Interview Volume
+    const volOnboarding = passed * ((100 - state.self) / 100);
+
+    // FINALIZATION: Driven by Passed Screening Volume
     const volFinalization = screened;
 
-    // 3. Capacity & headcount
-    const capRec = state.intpd  * state.days;
-    const capOnb = state.onbpd  * state.days;
-    const capFin = state.finpd  * state.days;
+    // 3. Headcount Math (Ceiling)
+    const capRecruiting = state.intpd * state.days;
+    const capOnboarding = state.onbpd * state.days;
+    const capFinalization = state.finpd * state.days;
 
-    const hcRecOff   = Math.ceil(volOffshore     / (capRec || 1));
-    const hcAdmin    = Math.ceil(volAdmin        / (capRec || 1));
-    const hcOnbOff   = Math.ceil(volOnboarding   / (capOnb || 1));
-    const hcFinOn    = Math.ceil(volFinalization  / (capFin || 1));
-    const totalHc    = hcRecOff + hcAdmin + hcOnbOff + hcFinOn;
+    const hcRecOff = Math.ceil(volOffshore / (capRecruiting || 1));
+    const hcRecGrass = Math.ceil(volGrassroots / (capRecruiting || 1));
+    const hcOnbOff = Math.ceil(volOnboarding / (capOnboarding || 1));
+    const hcFinOn = Math.ceil(volFinalization / (capFinalization || 1));
 
-    // 4. Cost (weekly = FTE × $/hr × 40)
-    const costRecOff = hcRecOff * state.rateOffRec * 40;
-    const costAdmin  = hcAdmin  * state.rateAdmin  * 40;
-    const costOnbOff = hcOnbOff * state.rateOffOnb * 40;
-    const costFin    = hcFinOn  * state.rateFin    * 40;
-    const totalCost  = costRecOff + costAdmin + costOnbOff + costFin;
-    const cps        = arrivals > 0 ? totalCost / arrivals : 0;
+    const totalHc = hcRecOff + hcRecGrass + hcOnbOff + hcFinOn;
 
-    // --- Render ---
+    // 4. Cost Math (Weekly)
+    const costOffshore = (hcRecOff + hcOnbOff) * (COSTS.offshoreYearly / 52);
+    const costOnshore = hcFinOn * (COSTS.onshoreYearly / 52);
+    const costGrassroots = hcRecGrass * 40 * COSTS.grassrootsHourly;
 
+    const totalCost = costOffshore + costOnshore + costGrassroots;
+    const cps = arrivals > 0 ? totalCost / arrivals : 0;
+
+    // --- Render Updates ---
+    
     // KPIs
-    el('kpi-hc').textContent   = totalHc;
+    el('kpi-hc').textContent = totalHc;
     el('kpi-cost').textContent = fmtUSD(totalCost);
-    el('kpi-cps').textContent  = fmtUSD(cps);
-    el('val-ratio').textContent = (scheduled / arrivals).toFixed(1) + ':1';
+    el('kpi-cps').textContent = fmtUSD(cps);
+    el('val-ratio').textContent = (scheduled/arrivals).toFixed(1) + ':1';
 
-    // Table cells (in-place, no rebuild)
-    el('fte-offrec').textContent  = hcRecOff;
-    el('cost-offrec').textContent = fmtUSD(costRecOff);
-    el('annual-offrec').textContent = '(' + fmtUSD(state.rateOffRec * 2080) + '/yr)';
-
-    el('fte-admin').textContent  = hcAdmin;
-    el('cost-admin').textContent = fmtUSD(costAdmin);
-    el('annual-admin').textContent = '(' + fmtUSD(state.rateAdmin * 2080) + '/yr)';
-
-    el('fte-offonb').textContent  = hcOnbOff;
-    el('cost-offonb').textContent = fmtUSD(costOnbOff);
-    el('annual-offonb').textContent = '(' + fmtUSD(state.rateOffOnb * 2080) + '/yr)';
-
-    el('fte-fin').textContent  = hcFinOn;
-    el('cost-fin').textContent = fmtUSD(costFin);
-    el('annual-fin').textContent = '(' + fmtUSD(state.rateFin * 2080) + '/yr)';
-
-    el('fte-total').textContent  = totalHc;
-    el('cost-total').textContent = fmtUSD(totalCost);
-
-    // Dim admin row when inactive
-    const adminRow = el('row-admin');
-    if (hcAdmin > 0) {
-      adminRow.classList.remove('row-inactive');
-    } else {
-      adminRow.classList.add('row-inactive');
-    }
-
-    // Funnel bars
-    const fMax = outreachAttempts;
-
-    el('n-outreach').textContent = fmtInt(outreachAttempts);
-    el('b-outreach').style.width = '100%';
-
+    // Funnel Visuals
+    const fMax = scheduled;
     el('n-sched').textContent = fmtInt(scheduled);
-    el('b-sched').style.width = Math.max(1, (scheduled / fMax) * 100) + '%';
-
+    el('b-sched').style.width = '100%';
+    
     el('n-pass').textContent = fmtInt(passed);
-    el('b-pass').style.width = Math.max(1, (passed / fMax) * 100) + '%';
-
+    el('b-pass').style.width = Math.max(1, (passed/fMax)*100) + '%';
+    
     el('n-screen').textContent = fmtInt(screened);
-    el('b-screen').style.width = Math.max(1, (screened / fMax) * 100) + '%';
-
+    el('b-screen').style.width = Math.max(1, (screened/fMax)*100) + '%';
+    
     el('n-conf').textContent = fmtInt(confirmed);
-    el('b-conf').style.width = Math.max(1, (confirmed / fMax) * 100) + '%';
+    el('b-conf').style.width = Math.max(1, (confirmed/fMax)*100) + '%';
 
     el('n-starts').textContent = fmtInt(arrivals);
 
-    // Efficiency Levers dynamic text
-    const localPct = state.eff;
-    const offshorePct = 100 - state.eff;
-    el('txt-admin').textContent =
-      'Local sourcing set to ' + localPct + '%: routes ' + localPct + '% to onshore/local sourcing support ($' + state.rateAdmin.toFixed(2) + '/hr) and ' +
-      offshorePct + '% to offshore recruiters.';
+    // Dynamic Text
+    const grassPct = 100 - state.eff;
+    el('txt-grassroots').textContent = `At ${state.eff}%, ${grassPct}% is routed to Onshore Grassroots ($${COSTS.grassrootsHourly}/hr)`;
+
+    // Table Generation
+    const tbody = el('costBody');
+    tbody.innerHTML = '';
+
+    // Row: Offshore Sourcing
+    tbody.innerHTML += `
+      <tr class="row-offshore" title="Offshore: $21,600/yr per FTE">
+        <td>
+          <div style="font-weight:500;">Sourcing / Screening</div>
+          <div class="rate-hint" data-hover-only>Offshore · $21,600/yr</div>
+        </td>
+        <td class="num">${hcRecOff}</td>
+        <td class="num">${fmtUSD(hcRecOff * (COSTS.offshoreYearly/52))}</td>
+      </tr>
+    `;
+
+    // Row: Grassroots (Conditional)
+    if(hcRecGrass > 0) {
+      tbody.innerHTML += `
+        <tr class="row-grassroots" title="Onshore grassroots: ~$20/hr">
+          <td>
+            <div style="font-weight:500; color:var(--accent-warn);">Grassroots Support</div>
+            <div class="rate-hint" data-hover-only style="color:var(--accent-warn);">Onshore · ~$20/hr</div>
+          </td>
+          <td class="num" style="color:var(--accent-warn); font-weight:700;">${hcRecGrass}</td>
+          <td class="num" style="color:var(--accent-warn);">${fmtUSD(costGrassroots)}</td>
+        </tr>
+      `;
+    }
+
+    // Row: Onboarding
+    tbody.innerHTML += `
+      <tr class="row-offshore" title="Offshore: $21,600/yr per FTE">
+        <td>
+          <div style="font-weight:500;">Onboarding Support</div>
+          <div class="rate-hint" data-hover-only>Offshore · $21,600/yr</div>
+        </td>
+        <td class="num">${hcOnbOff}</td>
+        <td class="num">${fmtUSD(hcOnbOff * (COSTS.offshoreYearly/52))}</td>
+      </tr>
+    `;
+
+    // Row: Finalization
+    tbody.innerHTML += `
+      <tr class="row-onshore" title="Onshore FTE: $70,000/yr">
+        <td>
+          <div style="font-weight:500;">Finalization (I-9 / Drug Screen)</div>
+          <div class="rate-hint" data-hover-only>Onshore FTE · $70,000/yr</div>
+        </td>
+        <td class="num">${hcFinOn}</td>
+        <td class="num">${fmtUSD(costOnshore)}</td>
+      </tr>
+    `;
+
+    // Row: Total
+    tbody.innerHTML += `
+      <tr style="font-weight:700; background:rgba(255,255,255,0.05);">
+        <td>Total</td>
+        <td class="num">${totalHc}</td>
+        <td class="num">${fmtUSD(totalCost)}</td>
+      </tr>
+    `;
   }
 
-  // --- Slider event wiring ---
-  const sliders = ['starts','outreach','show','pass','screen','arrive','eff','self','intpd','onbpd','finpd','days'];
-
-  sliders.forEach(key => {
+  // --- Event Handling ---
+  const inputs = ['starts', 'show', 'pass', 'screen', 'arrive', 'eff', 'self', 'intpd', 'onbpd', 'finpd', 'days'];
+  
+  inputs.forEach(key => {
     el(key).addEventListener('input', (e) => {
       state[key] = parseFloat(e.target.value);
+      // Update the badge text
       const badge = el('val-' + key);
-      if (badge) {
-        badge.textContent = ['outreach','show','pass','screen','arrive','eff','self'].includes(key)
-          ? state[key] + '%'
-          : state[key];
+      if(badge) {
+        if(['show','pass','screen','arrive','eff','self'].includes(key)) badge.textContent = state[key] + '%';
+        else badge.textContent = state[key];
       }
-      if (['outreach','show','pass','screen','arrive'].includes(key)) el('profileSelect').value = 'custom';
+      
+      if(['show','pass','screen','arrive'].includes(key)) el('profileSelect').value = 'custom';
+      
       calculate();
     });
   });
 
-  // --- Rate input wiring ---
-  const rateMap = {
-    'rate-offrec': 'rateOffRec',
-    'rate-admin':  'rateAdmin',
-    'rate-offonb': 'rateOffOnb',
-    'rate-fin':    'rateFin'
-  };
-
-  Object.entries(rateMap).forEach(([inputId, stateKey]) => {
-    el(inputId).addEventListener('input', (e) => {
-      state[stateKey] = parseFloat(e.target.value) || 0;
-      calculate();
-    });
-  });
-
-  // --- Profile select ---
   el('profileSelect').addEventListener('change', (e) => {
     const p = PRESETS[e.target.value];
-    if (p) {
-      ['outreach','show','pass','screen','arrive'].forEach(k => {
+    if(p) {
+      ['show', 'pass', 'screen', 'arrive'].forEach(k => {
         state[k] = p[k];
         el(k).value = p[k];
         el('val-' + k).textContent = p[k] + '%';
@@ -770,38 +670,36 @@
     }
   });
 
-  // --- Theme toggle ---
   el('btnDark').addEventListener('click', () => {
     const b = document.body;
     b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
   });
 
-  // --- Reset ---
   el('btnReset').addEventListener('click', () => {
-    state = { ...DEFAULTS };
-
-    // Reset sliders & badges
-    sliders.forEach(k => {
+    state = {
+      starts: 76, show: 60, pass: 75, screen: 80, arrive: 75,
+      eff: 75,
+      self: 25,
+      intpd: 10, 
+      onbpd: 20,
+      finpd: 15, 
+      days: 5
+    };
+    Object.keys(state).forEach(k => {
       el(k).value = state[k];
       const badge = el('val-' + k);
-      if (badge) {
-        badge.textContent = ['outreach','show','pass','screen','arrive','eff','self'].includes(k)
-          ? state[k] + '%'
-          : state[k];
+      if(badge) {
+        if(['show','pass','screen','arrive','eff','self'].includes(k)) badge.textContent = state[k] + '%';
+        else badge.textContent = state[k];
       }
     });
-
-    // Reset rate inputs
-    Object.entries(rateMap).forEach(([inputId, stateKey]) => {
-      el(inputId).value = state[stateKey];
-    });
-
     el('profileSelect').value = 'light-industrial';
     calculate();
   });
 
-  // --- Init ---
+  // Init
   calculate();
+
 })();
 </script>
 </body>
