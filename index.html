@@ -160,6 +160,18 @@
   }
   input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 
+  /* Efficiency Levers: filled portion of track uses green / purple (--value set by JS) */
+  input#eff::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #10b981 0%, #10b981 var(--value, 25%), var(--accent-track) var(--value, 25%), var(--accent-track) 100%);
+  }
+  input#eff::-moz-range-track { background: var(--accent-track); }
+  input#eff::-moz-range-progress { background: #10b981; }
+  input#self::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #8b5cf6 0%, #8b5cf6 var(--value, 25%), var(--accent-track) var(--value, 25%), var(--accent-track) 100%);
+  }
+  input#self::-moz-range-track { background: var(--accent-track); }
+  input#self::-moz-range-progress { background: #8b5cf6; }
+
   select {
     width: 100%; padding: 10px 14px;
     border-radius: var(--radius-md);
@@ -213,12 +225,18 @@
 
   .row-highlight { background: rgba(59, 130, 246, 0.08); }
   .row-dim { background: rgba(255, 255, 255, 0.02); }
-  .row-offshore { background: rgba(59, 130, 246, 0.1); }
-  .row-onshore { background: rgba(16, 185, 129, 0.1); }
-  .row-admin { background: rgba(245, 158, 11, 0.12); }
-  [data-theme="light"] .row-offshore { background: rgba(59, 130, 246, 0.08); }
-  [data-theme="light"] .row-onshore { background: rgba(16, 185, 129, 0.08); }
-  [data-theme="light"] .row-admin { background: rgba(245, 158, 11, 0.1); }
+  /* Sourcing/Screening - baby blue (aligned with funnel top) */
+  .row-offshore { background: rgba(59, 130, 246, 0.12); }
+  /* Local Hiring Support - green (aligned with funnel confirmed/starts) */
+  .row-admin { background: rgba(16, 185, 129, 0.15); }
+  /* Onboarding Support - dulled purple (aligned with funnel passed interview) */
+  .row-onboarding { background: rgba(139, 92, 246, 0.12); }
+  /* Finalization - pink (aligned with funnel passed screening) */
+  .row-onshore { background: rgba(236, 72, 153, 0.12); }
+  [data-theme="light"] .row-offshore { background: rgba(59, 130, 246, 0.1); }
+  [data-theme="light"] .row-admin { background: rgba(16, 185, 129, 0.1); }
+  [data-theme="light"] .row-onboarding { background: rgba(139, 92, 246, 0.1); }
+  [data-theme="light"] .row-onshore { background: rgba(236, 72, 153, 0.1); }
 
   /* --- Rate Input Styles --- */
   .rate-cell {
@@ -415,8 +433,8 @@
               <input id="onbpd" type="range" min="1" max="30" step="1" value="20">
             </div>
             <div class="control-group">
-              <div class="label-row"><span>Finalizations / Day (Onshore)</span><span class="val-tag" id="val-finpd">15</span></div>
-              <input id="finpd" type="range" min="1" max="30" step="1" value="15">
+              <div class="label-row"><span>Finalizations / Day (Onshore)</span><span class="val-tag" id="val-finpd">12</span></div>
+              <input id="finpd" type="range" min="1" max="30" step="1" value="12">
             </div>
             <div class="control-group">
               <div class="label-row"><span>Working Days / Week</span><span class="val-tag" id="val-days">5</span></div>
@@ -482,8 +500,8 @@
                 <!-- Local Hiring Support -->
                 <tr class="row-admin" id="row-admin">
                   <td>
-                    <div style="font-weight:500; color:var(--accent-warn);">Local Hiring Support</div>
-                    <div style="font-size:11px; color:var(--accent-warn); opacity:0.7;">Local</div>
+                    <div style="font-weight:500;">Local Hiring Support</div>
+                    <div style="font-size:11px; color:var(--text-muted);">Local</div>
                   </td>
                   <td class="rate-cell">
                     <div class="rate-input-wrap">
@@ -493,12 +511,12 @@
                     </div>
                     <div class="rate-annual" id="annual-admin"></div>
                   </td>
-                  <td class="num" id="fte-admin" style="color:var(--accent-warn); font-weight:700;">0</td>
-                  <td class="num" id="cost-admin" style="color:var(--accent-warn);">$0</td>
+                  <td class="num" id="fte-admin">0</td>
+                  <td class="num" id="cost-admin">$0</td>
                 </tr>
 
                 <!-- Offshore Onboarding -->
-                <tr class="row-offshore" id="row-offonb">
+                <tr class="row-onboarding" id="row-offonb">
                   <td>
                     <div style="font-weight:500;">Onboarding Support</div>
                     <div style="font-size:11px; color:var(--text-muted);">Offshore</div>
@@ -610,7 +628,7 @@
     self: 25,
     intpd: 10,
     onbpd: 20,
-    finpd: 15,
+    finpd: 12,
     days: 5,
     rateOffRec: 10.38,
     rateAdmin: 20.00,
@@ -728,6 +746,11 @@
   // --- Slider event wiring ---
   const sliders = ['starts','outreach','show','pass','screen','arrive','eff','self','intpd','onbpd','finpd','days'];
 
+  function updateEfficiencySliderFills() {
+    el('eff').style.setProperty('--value', state.eff + '%');
+    el('self').style.setProperty('--value', state.self + '%');
+  }
+
   sliders.forEach(key => {
     el(key).addEventListener('input', (e) => {
       state[key] = parseFloat(e.target.value);
@@ -738,6 +761,7 @@
           : state[key];
       }
       if (['outreach','show','pass','screen','arrive'].includes(key)) el('profileSelect').value = 'custom';
+      if (key === 'eff' || key === 'self') updateEfficiencySliderFills();
       calculate();
     });
   });
@@ -797,10 +821,12 @@
     });
 
     el('profileSelect').value = 'light-industrial';
+    updateEfficiencySliderFills();
     calculate();
   });
 
   // --- Init ---
+  updateEfficiencySliderFills();
   calculate();
 })();
 </script>
