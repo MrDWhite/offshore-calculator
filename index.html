@@ -303,6 +303,24 @@
       text-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
     }
 
+    .kpi-card--cps {
+      background: rgba(59, 130, 246, 0.15) !important;
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      padding: 10px;
+    }
+
+    .kpi-card-inner--white {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 12px 10px;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 4px 10px rgba(15, 25, 50, 0.12);
+    }
+
     .table-container {
       border-radius: var(--radius-lg);
       overflow: auto;
@@ -749,11 +767,12 @@
                 <div class="kpi-value" id="kpi-cost">$0</div>
                 <div class="kpi-sub">Total Labor Spend</div>
               </div>
-              <div class="kpi-card glass"
-                style="background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.4);">
-                <div class="kpi-label" style="color: #93c5fd;">Cost Per Start</div>
-                <div class="kpi-value kpi-glow" id="kpi-cps">$0</div>
-                <div class="kpi-sub" style="color: #93c5fd;">Efficiency Metric</div>
+              <div class="kpi-card glass kpi-card--cps">
+                <div class="kpi-card-inner--white">
+                  <div class="kpi-label" style="color: #93c5fd;">Cost Per Start</div>
+                  <div class="kpi-value kpi-glow" id="kpi-cps">$0</div>
+                  <div class="kpi-sub" style="color: #93c5fd;">Efficiency Metric</div>
+                </div>
               </div>
             </div>
 
