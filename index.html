@@ -14,7 +14,7 @@
       --glass-highlight: rgba(255, 255, 255, 0.3);
       --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
       --text-main: #ffffff;
-      --text-muted: rgba(255, 255, 255, 0.6);
+      --text-muted: #ffffff;
       --accent-primary: #3b82f6;
       --accent-glow: rgba(59, 130, 246, 0.5);
       --accent-success: #10b981;
@@ -295,7 +295,7 @@
 
     .kpi-sub {
       font-size: 11px;
-      opacity: 0.7;
+      opacity: 1;
     }
 
     .kpi-glow {
@@ -401,7 +401,7 @@
 
     .rate-symbol {
       font-weight: 500;
-      opacity: 0.7;
+      opacity: 1;
       font-size: 12px;
     }
 
@@ -509,6 +509,68 @@
     .c-emerald {
       background: #10b981;
       box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Slate theme override (neutral surfaces/borders/shadows only) */
+    :root {
+      --glass-panel: #283C5C;
+      --glass-border: #445878;
+      --glass-shadow: 0 8px 32px 0 rgba(15, 25, 50, 0.38);
+    }
+
+    /* App title header band */
+    .appHeader.glass {
+      background: #304868 !important;
+      border-color: #445878 !important;
+      box-shadow: 0 8px 32px 0 rgba(15, 25, 50, 0.38) !important;
+    }
+
+    /* All card/panel surfaces */
+    .card.glass,
+    .kpi-card.glass,
+    .table-container.glass {
+      background: #283C5C !important;
+      border-color: #445878 !important;
+      box-shadow: 0 8px 32px 0 rgba(15, 25, 50, 0.38) !important;
+    }
+
+    /* Title/header bands */
+    .card>h3,
+    .table-container>div:first-child {
+      background: #304868 !important;
+      border-color: #445878 !important;
+      border: 1px solid #445878 !important;
+      border-radius: 14px !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .card>h3 {
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 16px;
+    }
+
+    .table-container>div:first-child {
+      margin: 12px;
+      padding: 12px 14px !important;
+    }
+
+    /* Neutral table header + dividers */
+    .cost-table th {
+      background: #304464 !important;
+      border-bottom: 1px solid #445878;
+    }
+
+    .cost-table td {
+      border-bottom: 1px solid rgba(68, 88, 120, 0.45) !important;
+    }
+
+    .row-dim {
+      background: #304464;
+    }
+
+    tr[style*="background:rgba(255,255,255,0.05)"] {
+      background: #304464 !important;
     }
   </style>
 </head>
@@ -847,7 +909,7 @@
                     <div class="bar-fill c-emerald" style="width:100%"></div>
                   </div>
                 </div>
-                <div style="margin-top:16px; font-size:12px; opacity:0.6; text-align:right;">
+                <div style="margin-top:16px; font-size:12px; opacity:1; text-align:right;">
                   Conversion Ratio: <strong id="val-ratio">0:1</strong> (Scheduled Interviews : Start)
                 </div>
               </div>
