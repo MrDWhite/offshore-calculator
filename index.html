@@ -143,6 +143,35 @@
       transition: transform 0.2s;
     }
 
+    .left-column,
+    .right-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card--eff-compact {
+      padding: 16px 18px;
+    }
+
+    .card--eff-compact h3 {
+      margin-bottom: 10px;
+    }
+
+    .card--eff-compact .control-group {
+      margin-bottom: 12px;
+    }
+
+    .card--eff-compact .control-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .eff-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+
     h3 {
       margin: 0 0 16px 0;
       font-size: 13px;
@@ -628,7 +657,7 @@
       <div class="container">
         <div class="grid">
 
-          <div>
+          <div class="left-column">
             <div class="card glass">
               <h3>
                 <svg class="icon" viewBox="0 0 24 24">
@@ -686,46 +715,6 @@
               </div>
             </div>
 
-            <div class="card glass" style="border-left: 4px solid var(--accent-primary);">
-              <h3>
-                <svg class="icon" viewBox="0 0 24 24">
-                  <line x1="4" y1="21" x2="4" y2="14" />
-                  <line x1="4" y1="10" x2="4" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12" y2="3" />
-                  <line x1="20" y1="21" x2="20" y2="16" />
-                  <line x1="20" y1="12" x2="20" y2="3" />
-                  <line x1="1" y1="14" x2="7" y2="14" />
-                  <line x1="9" y1="8" x2="15" y2="8" />
-                  <line x1="17" y1="16" x2="23" y2="16" />
-                </svg>
-                Efficiency Levers
-              </h3>
-
-              <div class="control-group">
-                <div class="label-row">
-                  <span>Local Hiring Support Required</span>
-                  <span class="val-tag" id="val-eff">25%</span>
-                </div>
-                <input id="eff" type="range" min="0" max="100" value="25">
-                <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">
-                  <span id="txt-admin">Local Hiring Support set to 25%: routes 25% to Local Hiring Support ($20.00/hr)
-                    and 75% to offshore recruiters.</span>
-                </div>
-              </div>
-
-              <div class="control-group" style="margin-top:16px;">
-                <div class="label-row">
-                  <span>Self-Service Onboarding</span>
-                  <span class="val-tag" id="val-self">25%</span>
-                </div>
-                <input id="self" type="range" min="0" max="100" value="25">
-                <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">
-                  Reduces demand on Offshore Onboarding team
-                </div>
-              </div>
-            </div>
-
             <div class="card glass">
               <h3>
                 <svg class="icon" viewBox="0 0 24 24">
@@ -757,7 +746,7 @@
             </div>
           </div>
 
-          <div>
+          <div class="right-column">
             <div class="kpi-grid">
               <div class="kpi-card glass">
                 <div class="kpi-label">Headcount</div>
@@ -773,6 +762,46 @@
                 <div class="kpi-label" style="color: #93c5fd;">Cost Per Start</div>
                 <div class="kpi-value kpi-glow" id="kpi-cps">$0</div>
                 <div class="kpi-sub" style="color: #93c5fd;">Efficiency Metric</div>
+              </div>
+            </div>
+
+            <div class="card glass card--eff-compact" style="border-left: 4px solid var(--accent-primary);">
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24">
+                  <line x1="4" y1="21" x2="4" y2="14" />
+                  <line x1="4" y1="10" x2="4" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12" y2="3" />
+                  <line x1="20" y1="21" x2="20" y2="16" />
+                  <line x1="20" y1="12" x2="20" y2="3" />
+                  <line x1="1" y1="14" x2="7" y2="14" />
+                  <line x1="9" y1="8" x2="15" y2="8" />
+                  <line x1="17" y1="16" x2="23" y2="16" />
+                </svg>
+                Efficiency Levers
+              </h3>
+
+              <div class="control-group">
+                <div class="label-row">
+                  <span>Local Hiring Support Required</span>
+                  <span class="val-tag" id="val-eff">25%</span>
+                </div>
+                <input id="eff" type="range" min="0" max="100" value="25">
+                <div class="eff-note">
+                  <span id="txt-admin">Local Hiring Support set to 25%: routes 25% to Local Hiring Support ($20.00/hr)
+                    and 75% to offshore recruiters.</span>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <div class="label-row">
+                  <span>Self-Service Onboarding</span>
+                  <span class="val-tag" id="val-self">25%</span>
+                </div>
+                <input id="self" type="range" min="0" max="100" value="25">
+                <div class="eff-note">
+                  Reduces demand on Offshore Onboarding team
+                </div>
               </div>
             </div>
 
