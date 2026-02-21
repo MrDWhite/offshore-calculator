@@ -963,6 +963,7 @@
       const el = (id) => document.getElementById(id);
       const fmtUSD = (n) => '$' + Math.round(n).toLocaleString();
       const fmtInt = (n) => Math.round(n).toLocaleString();
+      const fmtUSDYearK = (n) => '$' + Math.max(0, Math.round(n / 1000)).toLocaleString() + 'K/yr';
 
       function calculate() {
         // 1. Funnel (bottom-up)
@@ -1012,19 +1013,19 @@
         // Table cells (in-place, no rebuild)
         el('fte-offrec').textContent = hcRecOff;
         el('cost-offrec').textContent = fmtUSD(costRecOff);
-        el('annual-offrec').textContent = '(' + fmtUSD(state.rateOffRec * 2080) + '/yr)';
+        el('annual-offrec').textContent = fmtUSDYearK(state.rateOffRec * 2080);
 
         el('fte-admin').textContent = hcAdmin;
         el('cost-admin').textContent = fmtUSD(costAdmin);
-        el('annual-admin').textContent = '(' + fmtUSD(state.rateAdmin * 2080) + '/yr)';
+        el('annual-admin').textContent = fmtUSDYearK(state.rateAdmin * 2080);
 
         el('fte-offonb').textContent = hcOnbOff;
         el('cost-offonb').textContent = fmtUSD(costOnbOff);
-        el('annual-offonb').textContent = '(' + fmtUSD(state.rateOffOnb * 2080) + '/yr)';
+        el('annual-offonb').textContent = fmtUSDYearK(state.rateOffOnb * 2080);
 
         el('fte-fin').textContent = hcFinOn;
         el('cost-fin').textContent = fmtUSD(costFin);
-        el('annual-fin').textContent = '(' + fmtUSD(state.rateFin * 2080) + '/yr)';
+        el('annual-fin').textContent = fmtUSDYearK(state.rateFin * 2080);
 
         el('fte-total').textContent = totalHc;
         el('cost-total').textContent = fmtUSD(totalCost);
